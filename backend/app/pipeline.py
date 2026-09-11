@@ -12,6 +12,7 @@ from app.models.lineage_gap import LineageGap
 from app.models.channel import MonitoredChannel
 from app.services import embedding, clustering, lineage, mutation_diff, danger_score
 from app.config import settings
+from app.services.watchlist import scan_watch_conditions
 
 async def process_message(msg: NormalizedMessage, db: AsyncSession) -> dict:
     """Persist one message and either a confirmed edge or a lineage gap."""
@@ -27,16 +28,20 @@ async def process_message(msg: NormalizedMessage, db: AsyncSession) -> dict:
         channel = await db.scalar(select(MonitoredChannel).where(MonitoredChannel.platform_channel_id == msg.channel_id))
         if channel:
             channel_id = channel.id
+        elif msg.source == "telegram":
+            raise ValueError(f"Telegram channel '{msg.channel_id}' is not registered")
     if assignment["is_new"]:
         cluster = ClaimCluster(centroid=vector, member_count=0, topology_label_internal="unclassified", topology_label_external="unclassified", first_seen=ts, last_seen=ts)
         db.add(cluster); await db.flush()
     else:
-        cluster = await db.get(ClaimCluster, assignment["assigned_cluster_id"])
+        cluster = (await db.execute(select(ClaimCluster).where(ClaimCluster.id == assignment["assigned_cluster_id"]).with_for_update())).scalar_one()
     raw = RawMessage(source=msg.source, source_id=msg.source_id, channel_id=channel_id, author_id=msg.author_id, author_account_age_days=msg.author_account_age_days, text=msg.text, language=msg.language, embedding=vector, timestamp=ts, cluster_id=cluster.id, metadata_json=msg.metadata)
     db.add(raw); await db.flush()
     cluster.member_count += 1; cluster.first_seen = min(cluster.first_seen, ts); cluster.last_seen = max(cluster.last_seen, ts)
     # Running mean keeps the centroid transactionally aligned with membership.
     old_count = cluster.member_count - 1
+    if len(cluster.centroid) != len(vector):
+        raise ValueError("Embedding dimension does not match cluster centroid")
     cluster.centroid = [((cluster.centroid[i] * old_count) + vector[i]) / cluster.member_count for i in range(len(vector))]
     parents = list((await db.scalars(select(RawMessage).where(RawMessage.cluster_id == cluster.id, RawMessage.timestamp < ts))).all())
     edge = None
@@ -56,5 +61,15 @@ async def process_message(msg: NormalizedMessage, db: AsyncSession) -> dict:
                 diff = await mutation_diff.compute_diff(parent.text, raw.text)
                 score = danger_score.compute_danger_score(diff, downstream_reach)
                 db.add(MutationDiff(edge_id=edge.id, diff_json=diff["diff_json"], danger_score=score["danger_score"], distortion_magnitude=score["distortion_magnitude"], downstream_reach=downstream_reach, llm_model=diff["llm_model"], llm_raw_response=diff["llm_raw_response"], diff_status="complete"))
+    if edge:
+        all_edges = list((await db.scalars(select(LineageEdge).where(LineageEdge.cluster_id == cluster.id, LineageEdge.is_flagged_gap.is_(False)))).all())
+        graph = nx.DiGraph((e.parent_message_id, e.child_message_id) for e in all_edges)
+        diffs = list((await db.scalars(select(MutationDiff).join(LineageEdge, MutationDiff.edge_id == LineageEdge.id).where(LineageEdge.cluster_id == cluster.id))).all())
+        for stored in diffs:
+            edge_obj = next((e for e in all_edges if e.id == stored.edge_id), None)
+            if edge_obj:
+                stored.downstream_reach = len(nx.descendants(graph, edge_obj.child_message_id))
+                stored.danger_score = danger_score.compute_danger_score({"diff_json": stored.diff_json}, stored.downstream_reach)["danger_score"]
     await db.commit()
+    await scan_watch_conditions(db)
     return {"message_id": str(raw.id), "cluster_id": str(cluster.id), "new_edges": int(edge is not None), "duplicate": False}

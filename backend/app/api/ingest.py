@@ -20,7 +20,12 @@ async def ingest_telegram_live(payload: dict, background_tasks: BackgroundTasks,
     # Pass to the pipeline asynchronously to free up the webhook response
     async def run_pipeline():
         async with AsyncSessionLocal() as session:
-            await process_message(normalized_msg, session)
+            try:
+                await process_message(normalized_msg, session)
+            except Exception:
+                await session.rollback()
+                import logging
+                logging.getLogger(__name__).exception("telegram_ingestion_failed")
     background_tasks.add_task(run_pipeline)
     return {"status": "accepted"}
 
