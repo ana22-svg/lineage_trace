@@ -1,0 +1,179 @@
+## 1. Overview & Problem Framing
+
+Existing misinformation tools output a verdict (true/false) or a trend signal (is this narrative growing), but neither shows how a claim mutated hop-to-hop as it moved across platforms and languages.
+
+**Core thesis:** the atomic unit worth tracking is the mutation edge, not the claim in isolation. A single claim cluster is a lineage tree — each edge represents one hop with a measurable change in language, framing, or facts. Analyzing the lineage, not just the endpoint, is what surfaces the specific dangerous version and who's driving its spread.
+
+ClaimTrace closes this gap by combining multilingual clustering, per-edge diffing, danger scoring, and topology + velocity signals into one deterministic pipeline — not agentic — sized for institutional monitoring (newsroom standards desks, political monitoring teams, brand reputation teams), not consumer fact-checking.
+
+---
+
+## 2. Multilingual Clustering
+
+**Goal:** assign every incoming message to the correct claim lineage cluster regardless of language or paraphrase, so reworded or translated versions stay linked as one traceable chain instead of scattering as unrelated posts.
+
+* **Approach:** sentence-transformers embeddings (`paraphrase-multilingual-mpnet-base-v2` or `LaBSE`) generate a vector per message; compare against existing cluster centroids.
+* If cosine similarity to the nearest centroid clears threshold, assign to that cluster and update the centroid; otherwise, spin up a new cluster.
+* Threshold tuned conservative-favoring-recall for the demo — better to under-cluster (miss a link, caught and flagged in Section 3) than to falsely merge two unrelated claims into one lineage.
+* **URL-independent by construction** — raw text embeddings, not link-sharing signals. This is what lets ClaimTrace operate on native-language Telegram/WhatsApp-forward text, where link-based coordination tools (e.g. CooRnet-lineage tools) structurally can't see anything (see Section 7A).
+
+---
+
+## 3. Lineage Construction
+
+**Goal:** turn a flat cluster of same-claim messages into a directed lineage tree — who said it first, who copied or mutated it, and in what order.
+
+* **Approach:** order candidate parent→child edges by timestamp precedence, then confirm with similarity decay between the two messages — closer wording implies a more likely direct parent; a larger drop implies a probable multi-hop mutation with an unseen intermediate.
+* **Rule — never force an edge.** If similarity decay between the best candidate parent and child is too large, flag it as a probable missing/unobserved link (e.g. an intermediate private WhatsApp forward wasn't captured) rather than fabricate a false parent-child connection.
+* **Output:** a directed lineage graph (NetworkX `DiGraph`) with `networkx.ancestors()` / `networkx.descendants()` walkable per node — the structure every downstream metric (diffing, danger scoring, topology, R_claim, debunk-lag) is computed on top of.
+
+---
+
+## 4. Mutation Diffing & Danger Scoring
+
+**Goal:** for every lineage edge, know exactly what changed and how dangerous that specific change is — not just flag it as "a variant."
+
+* **Mutation diff:** one Anthropic API call per edge, structured output, flags what changed at each hop — a number, a qualifier, an attribution, added or stripped context.
+* **Danger scoring:** computed from the diff output itself — distortion magnitude (how far the edit moved from the parent's meaning) combined with downstream reach through that edge (how many descendants inherited the mutation).
+* **Rule — never assert a danger score without a diff.** Every `danger_delta` must trace back to a specific structured diff output; no bare severity number floating free of the edge that produced it.
+* Output feeds the mutation river visualization directly — each branch point in the river is one diffed, danger-scored edge.i.e., the average number of direct descendants produced by nodes posted in that window — a windowed renewal-style estimate, not a full epidemiological model.
+
+## 5. R_claim: Velocity Metric
+
+**Goal:** an early-warning signal for acceleration — is this claim's spread speeding up right now, not just how big it's gotten so far.
+
+**Definition:** R_claim(t) = new mutation edges in window t ÷ active nodes in window t — i.e., the average number of direct descendants produced by nodes posted in that window — a windowed renewal-style estimate, not a full epidemiological model.
+
+**Use in the demo:** plot R_claim(t) across the cascade's timeline, with the debunk node's entry marked. A visible drop in R_claim after the debunk enters is a legible, defensible chart. An R_claim that *doesn't* drop after a debunk is itself a finding worth surfacing (debunk didn't reach the amplifying cluster).
+
+**Known limitation to state upfront, not hide:** on a demo-scale graph (30–60 nodes), R_claim is noisy — small `|P(t)|` in early windows can swing the estimate. Use wide enough windows that `|P(t)| ≥ 5` before reporting a value, and say so explicitly in the write-up. Judges respect a stated limitation far more than an unstated one they catch themselves.
+
+**Use in the demo:** plot R_claim(t) across the cascade's timeline, with the debunk node's entry marked. A visible drop in R_claim after the debunk enters is a legible, defensible chart. An R_claim that *doesn't* drop after a debunk is itself a finding worth surfacing (debunk didn't reach the amplifying cluster).
+
+**Known limitation to state upfront, not hide:** on a demo-scale graph (30–60 nodes), R_claim is noisy — small `|P(t)|` in early windows can swing the estimate. Use wide enough windows that `|P(t)| ≥ 5` before reporting a value, and say so explicitly in the write-up. Judges respect a stated limitation far more than an unstated one they catch themselves.
+
+---
+
+## 6. Debunk-Lag Tracking
+
+Directly relevant to the newsroom buyer's actual question: *"how long were we exposed?"*
+
+* **Time-to-debunk** — gap between the claim's peak velocity (max R_claim or max nodes/hour) and the first debunker-role node entering the lineage.
+* **Pre-debunk reach** — total accumulated descendants/reach at the moment the debunk appears.
+
+Both are timestamp comparisons on data already in the graph — reporting/visualization work, not new pipeline.
+
+---
+
+## 7. Evaluation Methodology (credibility layer)
+
+VeraTrail's documentation is architecturally detailed but never demonstrates the system outperforming a simpler baseline — no accuracy numbers, no head-to-head comparison. This is the single highest-leverage gap to close.
+
+**Structure:**
+
+* 3–5 real claims (assembled from public reporting on actual misinformation cases — screenshots, news coverage, existing fact-check writeups).
+* For each: run a **baseline** (single LLM call, "is this true, yes/no") alongside **ClaimTrace's full pipeline**.
+* Report, per case: what the baseline said, what ClaimTrace's lineage revealed that the baseline couldn't (the specific mutation point, the coordination signature, the debunk-lag), and whether ClaimTrace's structural signal (burst classification) correctly matched what's publicly known about how that case actually spread.
+* Be explicit about cherry-picking risk: state the case-selection criteria (e.g., "cases with public reporting detailed enough to verify our lineage reconstruction against") rather than silently picking the 3 that worked best.
+
+---
+
+## 7A. URL-Independent Multilingual Clustering
+
+Existing coordination-detection tooling in this space (e.g. CooRnet-lineage tools) originated around **link-sharing behavior** — coordinated sharing of identical URLs — which structurally can't see campaigns that spread as native text, images, or audio with no embedded link. (Note: newer extensions like CooRTweet have broadened this; don't claim the whole category is URL-only without checking the specific tool you're contrasting against.)
+
+ClaimTrace's clustering (Section 2) is already URL-independent by construction — it embeds and clusters raw message text using multilingual models, so it works on native-language public channel forwards (Telegram, WhatsApp screenshots reposted elsewhere) with no link required. This isn't a separate build item; it's a property of the existing pipeline worth stating explicitly in the pitch, since it's the reason ClaimTrace can operate on Indian-language regional spread where link-based tools structurally cannot.
+
+## 7B. Academic Grounding for the Core Claim (use in R1 pitch + meeting)
+
+Claim mutation is a real, recently-identified research gap — cite this rather than asserting novelty unsupported. All citations below were checked directly against arXiv (fact-checked Aug 2026):
+
+1. **Maurya, R.G. et al., "Simulating Misinformation Propagation in Social Networks using Large Language Models," arXiv:2511.10384** — accepted, CIKM 2025 LASS workshop (Seoul, Nov 2025). ✅ Fully verified. Builds an auditor-node framework measuring factual drift as content is rewritten across a network — but strictly in **simulated** LLM-persona chains, not real-world cascades.
+2. **Chong, J.R.B., Tang, Y., Tung, A.K.H., "MPCG: Multi-Round Persona-Conditioned Generation for Modeling the Evolution of Misinformation with LLMs," arXiv:2509.16564** — National University of Singapore, submitted 20 Sep 2025. ✅ Fully verified. States plainly that current misinformation detection approaches **"implicitly assume that misinformation is static."**
+3. **Keim, M., Chandio, S., Khalid, O., Nithyanand, R., "I Want to Believe (but the Vocabulary Changed): Measuring the Semantic Structure and Evolution of Conspiracy Theories," arXiv:2603.26062** — University of Iowa, Mar 2026. ✅ Fully verified. Large-scale empirical study (169.9M Reddit comments) showing conspiracy narratives **"evolve non-uniformly"** with patterns **"not captured by keyword-based approaches alone."** Strongest empirical backing of the four — use this as the primary citation if only one fits on a slide.
+4. **"Language Mutations Sustain the Persistences of Conspiracy Theories on Social Media," arXiv:2605.20050** — ⚠️ title and abstract content verified against the source, but author byline could not be confirmed in this pass. Pull the author list directly from the arXiv abstract page before putting names on a slide; everything else about the citation checks out.
+
+**Defensible novelty framing:** *"Claim mutation has been identified as a critical, empirically-documented gap — both in simulation and in large-scale real-world data — but existing tools still treat misinformation detection as a static, one-shot classification. ClaimTrace is, to our knowledge, the first system to operationalize mutation-tracking on real-world cascades as they happen, fused with structural coordination signals for actionable output."* This is citable and survives a technical follow-up question — do not use unverified specific claims about named commercial tools (e.g. Cyabra) instead.
+
+## 8. Screenshot/Image Fingerprinting (stretch goal, not MVP-critical)
+
+Addresses a real gap: Indian misinformation spreads heavily as *screenshots* (cropped tweets, WhatsApp forward images), which breaks text-embedding clustering entirely since it's a different modality carrying the same claim.
+
+* **Approach:** perceptual hashing (`imagehash` in Python) to catch re-uploaded/cropped/watermarked versions of the same image and fold them into the same lineage cluster as their text counterparts.
+* **Status:** the one genuinely new pipeline in this spec (image ingestion + hashing + cross-modal matching), not free math on existing data. Scope as a week 4–5 stretch, only if items 2–6 are done early. Do not commit to this in the Round 1 PPT as a guaranteed deliverable.
+
+---
+
+## 8A. Explicitly Deferred: Audio/Video Forensics (post-hackathon roadmap, NOT this build)
+
+Voice-clone detection (Whisper transcription + ECAPA-TDNN speaker embeddings + DBSCAN spectrogram clustering) and video-similarity/watermark tracking (ViSiL-style) are **not part of this hackathon's Tier 1 build.** This is a multi-week research pipeline on its own and does not fit a solo 40-day timeline alongside the core lineage engine — attempting it risks leaving everything half-working instead of the core thesis fully working.
+
+**Status:** Year 1 roadmap item, stated explicitly as such in the pitch deck (supports "Scalability & Future Potential," 10% of R1 scoring) — never claimed as a Round 2 deliverable.
+
+**Prepared answer if asked in the 5-minute idea meeting:** *"That's the Year 1 roadmap — once the lineage engine proves the mutation-tracking thesis on text, the same clustering approach extends to audio/video fingerprints. We scoped it out of the 40-day build deliberately so the core thesis is fully working rather than everything half-working."*
+
+---
+
+## 9. Data Sources (MVP-realistic)
+
+* **Curated seed dataset** — 2–3 real cases hand-assembled from public posts/reporting, retrospectively. Reliable, doesn't depend on any live API staying up during the pitch.
+* **Telegram public channels (live)** — free via Telegram Bot API, no paid tier, and relevant to Indian-language misinformation spread. Used for one live-ingestion demo case.
+* **X/Twitter, WhatsApp** — explicitly framed as roadmap, not MVP dependencies (WhatsApp forwards can't be scraped at all due to E2E encryption; X API cost makes it unviable solo).
+
+---
+
+## 10. Tech Stack
+
+* **Ingestion:** Telegram Bot API (public channels); curated dataset assembly for retrospective cases.
+* **Clustering/embeddings:** sentence-transformers (or equivalent) for near-duplicate detection.
+* **Lineage construction & graph math:** Python (networkx) for topology metrics, R_claim computation, in-degree/clustering-coefficient/burstiness.
+* **Mutation diffing:** LLM API call per lineage edge (Anthropic API), structured output for the diff summary and danger score.
+* **Coordination overlay:** account-age + timestamp clustering heuristics — no ML required for MVP.
+* **Prospective monitoring/alerting:** lightweight scheduled job (cron-style, in-process for MVP) evaluating watchlist conditions against the live graph — see Section 13. No new infrastructure beyond a periodic re-scan of existing graph state.
+* **Backend:** FastAPI or Express; Postgres/Mongo for graph snapshots.
+* **Visualization:** timeline-based "mutation river" (claim text evolving left-to-right with branch points) rather than a 3D force-directed graph — more legible for the lineage story, and deliberately distinct from existing 3D-graph tools in the space.
+* **Image fingerprinting (stretch):** `imagehash` (Python), perceptual hashing.
+
+---
+
+## 11. Business Model (for Round 1 PPT)
+
+* **Buyer:** newsroom trust/standards desks, political war-rooms (opposition monitoring), brand reputation teams.
+* **Wedge:** early-warning for coordinated distortion, not fact-checking — instrumenting *before* something needs fact-checking, not competing with fact-checkers.
+* **Pricing shape:** seat-based SaaS or per-claim/per-topic monitoring subscription, not consumer/ad-supported.
+* **Why this beats a consumer verdict app:** verdict-delivery is saturated (every fact-checker, Community Notes, VeraTrail-style tools). Spread-pattern intelligence for a paying institutional buyer is the underserved wedge.
+
+---
+
+## 12. Watchlists & Alerting (Prospective Monitoring)
+
+**Why this belongs in the spec:** every mechanism through Section 6 is *reactive* — it explains a cascade that already happened. Nothing in the current pipeline holds a standing intention to act on something in the future. This section closes that gap cheaply, using only data the pipeline already produces.
+
+**Core mechanic:** a user (editor, war-room analyst, brand comms lead) attaches a **watch condition** to a claim cluster or topic, not just a query. The system doesn't answer once — it re-evaluates the condition on a schedule and fires when the condition trips.
+
+**Supported watch conditions (MVP scope, all computed from existing graph state — no new pipeline):**
+
+* **R_claim threshold breach** — alert when a cluster's R_claim(t) crosses a set velocity (e.g., "notify me if this topic's R_claim exceeds 2.5").
+* **Debunk-lag exceeded** — alert when a claim has been live past a set duration with no debunker-role node in its lineage ("no correction has entered this cascade in 6 hours").
+* **Topology shift** — alert when a cluster's classification changes archetype mid-cascade (e.g., mesh → burst), since that transition is itself a coordination signal worth surfacing immediately rather than only in retrospective reporting.
+* **New high-danger edge** — alert when any new mutation edge in a watched cluster scores above a danger threshold, surfacing the distortion the moment it's detected rather than only in a periodic digest.
+
+**Implementation for MVP:** a periodic re-scan job (interval-based, not event-driven — no new infrastructure) evaluates active watch conditions against current graph state each cycle and pushes a notification (in-app + optional webhook/email stub) when a condition trips. This reuses existing computed values (R_claim, debunk-lag, topology label, danger score) — it is pure orchestration on top of Sections 2–6, not new modeling work.
+
+**Framing for the pitch:** this is what converts ClaimTrace from a lookup tool into a monitoring product — directly supporting the SaaS pricing model in Section 11 ("watchlists," "custom watchlists," "alert digests" already appear in the business model tier descriptions; this section is the mechanism that makes those promises real rather than aspirational copy).
+
+**Scope discipline:** do not overbuild this. No ML-driven alert prioritization, no cross-cluster correlation, no adaptive thresholds for MVP — a simple threshold-check loop is sufficient to demonstrate the capability and is roughly a half-day of work on top of the existing metrics.
+
+---
+
+## 13. Build Sequence (solo, ~5 weeks to final submission)
+
+| Week | Focus |
+|-|-|
+| 1 | Seed dataset assembly (2–3 real cases) + embedding-based clustering + basic lineage graph structure (no LLM diff yet) |
+| 2 | LLM-powered mutation diffing per edge + danger scoring |
+| 3 | Coordination overlay (account-age/timestamp) + topology classifier + Telegram live ingestion for one case |
+| 4 | R_claim + debunk-lag reporting + "mutation river" visualization + watchlist/alerting scan loop (Section 12) |
+| 5 | Evaluation write-up (baseline vs. ClaimTrace on 3–5 cases), polish, demo script, buffer |
+
+Screenshot fingerprinting (Section 8) only if 1–4 land early.

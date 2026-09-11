@@ -1,0 +1,63 @@
+GOAL
+
+Reconstruct how a claim mutates as it spreads across platforms, and distinguish organic propagation from coordinated amplification — producing claim lineage, not a claim verdict. Serve institutional buyers (newsroom standards desks, political monitoring teams, brand reputation teams) who need to know how a claim moved and warped, not just whether it's true.
+
+SCOPE
+
+In scope (MVP, 5-week solo build):
+
+Ingestion: Telegram public channels (live, via Bot API) + curated seed dataset (2–3 real cases, retrospective)
+Multilingual clustering of near-duplicate claims (sentence-transformers)
+Lineage tree construction (parent→child edges via timestamp + similarity decay)
+Per-edge mutation diffing + danger scoring (Anthropic API)
+Coordination overlay (account-age + timestamp heuristics — no ML)
+Topology classification (hub-and-spoke / mesh / burst, via networkx)
+R_claim velocity metric + debunk-lag tracking
+Watchlists & alerting (prospective monitoring — periodic re-scan, threshold-based)
+Mutation river visualization (timeline-based, D3.js)
+Evaluation write-up: baseline LLM verdict vs. ClaimTrace on 3–5 real cases
+
+RULES
+
+Operating constraints the system must respect at every layer:
+
+Never force a lineage edge. If similarity decay between candidate parent/child is too large, flag as a probable missing/unobserved link rather than fabricate a false edge.
+Never assert a danger score without a diff. Every danger score must trace back to a specific structured diff output — no bare severity numbers.
+State metric limitations explicitly. R_claim is noisy below |P(t)| ≥ 5; don't report a value below that threshold, and say so in any write-up or demo.
+No unverified claims about named commercial competitors. Use the academic-grounding citations (Section 7B of the spec) instead of asserting things about specific competitor products.
+No fabricated bias attribution to real named outlets. Any multi-angle framing stays archetypal, never brand-named.
+Coordination signals must attach to a specific edge, not the graph as a whole — "this account cluster introduced this mutation," never a generic "bot activity detected."
+Watch conditions only evaluate existing computed state. No new modeling work in the alerting layer — pure orchestration on top of Sections 2–6 metrics.
+Scope discipline over feature creep. Screenshot fingerprinting and beyond are stretch-only, gated on core pipeline completion — never committed as guaranteed deliverables.
+
+BACKEND ARCHITECTURE (finalized components + flow)
+
+Ingestion Service — pulls from Telegram Bot API (live) and the curated seed dataset. Normalizes both into a common message schema before passing downstream.
+
+Clustering Service — sentence-transformers embeddings. Compares each new claim against existing cluster centroids; assigns to an existing cluster if similarity is above threshold, otherwise creates a new cluster.
+
+Lineage Construction Service — orders parent→child edges within a cluster using timestamp precedence + similarity decay. Produces either a confident edge or a flagged "missing/unobserved link."
+
+Mutation Diff Service — one Anthropic API call per lineage edge. Outputs a structured diff (what changed: number, qualifier, attribution, etc.).
+
+Danger Scoring — computed from the diff output: distortion magnitude combined with downstream reach through that edge.
+
+Graph Store (Postgres) — central persistence layer. All downstream services read from and write back to this store.
+
+Coordination Overlay — account-age clustering + timestamp burstiness, computed per edge, written back to the graph store.
+
+Topology Classifier — networkx graph math on stored nodes/edges; outputs a cluster-level archetype label (hub-and-spoke / mesh / burst).
+
+R_claim Calculator — windowed velocity metric computed from stored node/edge timestamps.
+
+Debunk-Lag Tracker — timestamp comparison between peak velocity and first debunker-role node.
+
+Watchlist Scan Job — periodic, cron-style re-scan of graph store against active watch conditions. Writes alerts when a condition trips; does not modify pipeline data.
+
+FastAPI Layer — sole interface between backend and frontend. All frontend requests route through this layer only.
+
+Frontend (D3.js) — renders the mutation river visualization from data served by FastAPI.
+
+DATABASE (finalized)
+
+Postgres — single database, no separate graph DB.

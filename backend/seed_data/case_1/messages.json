@@ -1,0 +1,68 @@
+[
+  {
+    "source": "seed",
+    "source_id": "seed_1_001",
+    "channel_id": "channel_A",
+    "author_id": "user_alpha",
+    "author_account_age_days": 1205,
+    "text": "Reports coming in that 10 workers were injured at the downtown factory.",
+    "language": "en",
+    "timestamp": "2026-09-08T10:00:00Z",
+    "metadata": {"role": "origin"}
+  },
+  {
+    "source": "seed",
+    "source_id": "seed_1_002",
+    "channel_id": "channel_B",
+    "author_id": "user_beta",
+    "author_account_age_days": 450,
+    "text": "I just heard that 10 workers got hurt at the downtown factory today.",
+    "language": "en",
+    "timestamp": "2026-09-08T10:05:00Z",
+    "metadata": {}
+  },
+  {
+    "source": "seed",
+    "source_id": "seed_1_003",
+    "channel_id": "channel_C",
+    "author_id": "user_gamma",
+    "author_account_age_days": 2,
+    "text": "BREAKING: 100 workers critically injured at the downtown factory! Complete disaster!",
+    "language": "en",
+    "timestamp": "2026-09-08T10:15:00Z",
+    "metadata": {}
+  },
+  {
+    "source": "seed",
+    "source_id": "seed_1_004",
+    "channel_id": "channel_D",
+    "author_id": "user_delta",
+    "author_account_age_days": 1,
+    "text": "100 workers critically injured at the downtown factory! Complete disaster!",
+    "language": "en",
+    "timestamp": "2026-09-08T10:15:10Z",
+    "metadata": {}
+  },
+  {
+    "source": "seed",
+    "source_id": "seed_1_005",
+    "channel_id": "channel_E",
+    "author_id": "user_epsilon",
+    "author_account_age_days": 2,
+    "text": "100 workers critically injured at the downtown factory! Complete disaster!",
+    "language": "en",
+    "timestamp": "2026-09-08T10:15:20Z",
+    "metadata": {}
+  },
+  {
+    "source": "seed",
+    "source_id": "seed_1_006",
+    "channel_id": "channel_F",
+    "author_id": "user_factcheck",
+    "author_account_age_days": 2100,
+    "text": "Correction: Official statements confirm 10 workers were treated for minor injuries, not 100.",
+    "language": "en",
+    "timestamp": "2026-09-08T14:00:00Z",
+    "metadata": {"role": "debunker"}
+  }
+]

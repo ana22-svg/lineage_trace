@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ClaimTrace</title>
+    <link rel="stylesheet" href="/src/styles.css" />
+  </head>
+  <body>
+    <header>
+      <h1>ClaimTrace</h1>
+      <div id="topology-container" class="topology-badge"></div>
+    </header>
+    
+    <main>
+      <section id="dashboard-panel">
+        <div id="debunk-caveat-banner" class="hidden caveat-banner">
+          ⚠️ Estimated from claim origin, not peak velocity (insufficient data for reliable R_claim)
+        </div>
+        <div id="cluster-stats"></div>
+        <div id="alerts-panel"></div>
+      </section>
+
+      <section id="river-panel">
+        <div id="mutation-river"></div>
+      </section>
+    </main>
+
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>
