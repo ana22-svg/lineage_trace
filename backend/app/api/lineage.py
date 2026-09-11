@@ -3,8 +3,27 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.database import get_db
 from app.schemas.lineage import LineageGraphResponse
 from app import crud
+from sqlalchemy import select
+from app.models.message import RawMessage
+from app.models.edge import LineageEdge
 
 router = APIRouter(prefix="/api/clusters", tags=["Lineage"])
+
+@router.get("/{cluster_id}/messages")
+async def list_cluster_messages(cluster_id: str, page: int = 1, page_size: int = 50, db: AsyncSession = Depends(get_db)):
+    if await crud.get_cluster(db, cluster_id) is None:
+        raise HTTPException(404, "Cluster not found")
+    page_size = min(max(page_size, 1), 100)
+    rows = list((await db.scalars(select(RawMessage).where(RawMessage.cluster_id == cluster_id).order_by(RawMessage.timestamp).offset((max(page, 1)-1)*page_size).limit(page_size))).all())
+    return [{"id": str(row.id), "text": row.text, "language": row.language, "timestamp": row.timestamp, "source": row.source} for row in rows]
+
+@router.get("/{cluster_id}/edges")
+async def list_cluster_edges(cluster_id: str, page: int = 1, page_size: int = 50, db: AsyncSession = Depends(get_db)):
+    if await crud.get_cluster(db, cluster_id) is None:
+        raise HTTPException(404, "Cluster not found")
+    page_size = min(max(page_size, 1), 100)
+    rows = list((await db.scalars(select(LineageEdge).where(LineageEdge.cluster_id == cluster_id, LineageEdge.is_flagged_gap.is_(False)).order_by(LineageEdge.created_at).offset((max(page, 1)-1)*page_size).limit(page_size))).all())
+    return [{"id": str(row.id), "parent_message_id": str(row.parent_message_id), "child_message_id": str(row.child_message_id), "similarity_score": row.similarity_score, "similarity_decay": row.similarity_decay} for row in rows]
 
 @router.get("/{cluster_id}/lineage", response_model=LineageGraphResponse)
 async def get_cluster_lineage(cluster_id: str, db: AsyncSession = Depends(get_db)):

@@ -12,6 +12,8 @@ class Settings(BaseSettings):
     R_CLAIM_WINDOW_HOURS: float = 6.0
     MIN_ACTIVE_NODES_FOR_R_CLAIM: int = 5
     BURSTINESS_INTER_ARRIVAL_THRESHOLD_SECONDS: float = 60.0
+    API_KEY: str | None = None
+    ANTHROPIC_TIMEOUT_SECONDS: float = 30.0
 
     class Config:
         env_file = ".env"
