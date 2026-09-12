@@ -1,0 +1,813 @@
+<!DOCTYPE html><html class="dark" lang="en"><head><meta charset="utf-8"><meta content="width=device-width, initial-scale=1.0" name="viewport"><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"><link href="https://fonts.googleapis.com" rel="preconnect"><link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"><link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&amp;family=JetBrains+Mono:wght@400;500;600&amp;family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"><style>@layer base{html,body{margin:0;padding:0;}body{overscroll-behavior:none;}main>:first-child{margin-top:0!important;}main>:last-child{margin-bottom:0!important;}}::-webkit-scrollbar{display:none;}</style><script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script><script id="tailwind-config">tailwind.config={darkMode:"class",theme:{extend:{"colors":{"surface-container-highest":"#2d3544","secondary-container":"#33a192","on-secondary-fixed":"#00201c","ink-navy":"#101826","on-error":"#690005","primary-fixed":"#e8ddff","secondary-fixed-dim":"#71d8c7","signal-teal":"#2f9e8f","tertiary":"#ffb0cd","surface-container-low":"#141c2a","panel":"#161f36","on-secondary-fixed-variant":"#005047","error-container":"#93000a","inverse-on-surface":"#293140","surface-container-high":"#222a39","surface-tint":"#cebdff","on-tertiary":"#640039","secondary":"#71d8c7","on-secondary":"#003731","background":"#0b1321","on-secondary-container":"#00302a","on-background":"#dbe2f6","on-error-container":"#ffdad6","on-surface":"#dbe2f6","outline-variant":"#494552","on-primary-fixed":"#21005e","surface-variant":"#2d3544","on-tertiary-fixed-variant":"#8c0053","accent-purple":"#a78bfa","tertiary-container":"#ff65ac","outline":"#948e9d","on-tertiary-container":"#6b003e","primary":"#cebdff","tertiary-fixed-dim":"#ffb0cd","secondary-fixed":"#8ef5e3","tertiary-fixed":"#ffd9e4","inverse-primary":"#674bb5","error":"#ffb4ab","primary-fixed-dim":"#cebdff","surface-container":"#18202e","on-primary-fixed-variant":"#4f319c","surface-bright":"#313949","on-tertiary-fixed":"#3e0022","on-primary":"#381385","surface-container-lowest":"#060e1c","alert-pink":"#ec4899","amplify-amber":"#f0a020","inverse-surface":"#dbe2f6","surface":"#0b1321","surface-dim":"#0b1321","on-surface-variant":"#cac4d4","slate":"#7d8aa0","border-line":"#23304d","primary-container":"#a78bfa","on-primary-container":"#3c1989","paper":"#e7ebf2"},"borderRadius":{"DEFAULT":"0.25rem","lg":"0.5rem","xl":"0.75rem","full":"9999px"},"spacing":{"gutter":"1rem","gutter-desktop":"1.5rem","margin-desktop":"2rem","space-md":"0.75rem","space-sm":"0.5rem","margin":"1rem","space-xl":"2rem","space-xs":"0.25rem","space-lg":"1.25rem"},"fontFamily":{"code-lg":["JetBrains Mono"],"headline-xl":["Newsreader"],"headline-md":["Newsreader"],"headline-xl-mobile":["Newsreader"],"body-md":["IBM Plex Sans"],"headline-lg-mobile":["Newsreader"],"code-md":["JetBrains Mono"],"label-md":["IBM Plex Sans"],"label-sm":["JetBrains Mono"],"headline-lg":["Newsreader"],"body-lg":["IBM Plex Sans"],"body-sm":["IBM Plex Sans"],"headline-sm":["Newsreader"]},"fontSize":{"code-lg":["14px",{"lineHeight":"20px","fontWeight":"500"}],"headline-xl":["40px",{"lineHeight":"48px","letterSpacing":"-0.02em","fontWeight":"600"}],"headline-md":["24px",{"lineHeight":"32px","fontWeight":"500"}],"headline-xl-mobile":["30px",{"lineHeight":"38px","letterSpacing":"-0.015em","fontWeight":"600"}],"body-md":["14px",{"lineHeight":"20px","fontWeight":"400"}],"headline-lg-mobile":["24px",{"lineHeight":"32px","letterSpacing":"-0.01em","fontWeight":"500"}],"code-md":["12px",{"lineHeight":"16px","fontWeight":"400"}],"label-md":["13px",{"lineHeight":"18px","fontWeight":"500"}],"label-sm":["11px",{"lineHeight":"14px","letterSpacing":"0.05em","fontWeight":"500"}],"headline-lg":["32px",{"lineHeight":"40px","letterSpacing":"-0.015em","fontWeight":"500"}],"body-lg":["16px",{"lineHeight":"24px","fontWeight":"400"}],"body-sm":["12px",{"lineHeight":"18px","fontWeight":"400"}],"headline-sm":["19px",{"lineHeight":"26px","fontWeight":"500"}]}}}};</script></head><body class="bg-ink-navy text-on-surface font-body-md text-body-md antialiased"><aside class="fixed left-0 top-0 h-full w-72 bg-panel border-r border-border-line z-50 flex flex-col justify-between"><div class="flex flex-col"><div class="h-16 px-space-lg flex items-center gap-space-sm border-b border-border-line"><img alt="ClaimTrace Logo" class="h-8 w-auto object-contain" src="https://lh3.googleusercontent.com/aida/AEtjO1V-HZqGyZqaYLWsizDHrvs0p91nwCEU0cUmmV8V_0-GCzR_cicxG5ht-HlCXnuh9vihiL9dPitIlh4Tsn8QmGKT-BoXraNQbbWkkZbYO0clbQwsmDqrj9AQm1UJ3m1EgFwC1CI01uGJvKNSZ1AxMBMPDDsn5K0-zFXGWCCw72PcczsOVpWOY2MOELqOmLZkruQtfJFPtyIwhUjSB0hGmWXkD7wVufnF1elEkOhm64q-mzvmyKyFmgBUWkIJ"><div class="flex flex-col"><span class="font-headline-sm text-headline-sm text-paper tracking-tight">ClaimTrace</span><span class="font-label-sm text-label-sm text-slate uppercase tracking-wider">Forensic Intelligence</span></div></div><div class="px-space-md py-space-sm"><div class="px-space-sm py-space-xs font-label-sm text-label-sm uppercase tracking-wider text-slate">Forensic Desks</div></div><nav class="flex flex-col gap-0.5 px-space-sm" data-active-classes="bg-surface-container-high text-accent-purple border-l-2 border-accent-purple font-medium"><a class="flex items-center gap-space-md px-space-md py-space-sm text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors" data-path="landing-and-overview" href="#"><span class="material-symbols-outlined text-[18px]">grid_view</span><span class="font-body-md text-body-md">Landing &amp; Overview</span></a><a aria-current="page" class="flex items-center gap-space-md px-space-md py-space-sm transition-colors bg-surface-container-high text-accent-purple border-l-2 border-accent-purple font-medium" data-path="clusters-explorer" href="#"><span class="material-symbols-outlined text-[18px]">bubble_chart</span><span class="font-body-md text-body-md">Clusters Explorer</span></a><a class="flex items-center gap-space-md px-space-md py-space-sm text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors" data-path="mutation-river-detail" href="#"><span class="material-symbols-outlined text-[18px]">account_tree</span><span class="font-body-md text-body-md">Mutation River (Detail)</span></a><a class="flex items-center gap-space-md px-space-md py-space-sm text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors" data-path="watchlists-and-alerts" href="#"><span class="material-symbols-outlined text-[18px]">notifications_active</span><span class="font-body-md text-body-md">Watchlists &amp; Alerts</span></a><a class="flex items-center gap-space-md px-space-md py-space-sm text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors" data-path="institutional-pricing" href="#"><span class="material-symbols-outlined text-[18px]">verified_user</span><span class="font-body-md text-body-md">Institutional Pricing</span></a></nav></div><div class="p-space-md border-t border-border-line bg-surface-container-lowest flex flex-col gap-space-xs"><div class="flex items-center justify-between text-slate font-label-sm text-label-sm uppercase tracking-wider"><span class="">Ingest Node</span><span class="font-code-md text-code-md text-signal-teal">PAR-04</span></div><div class="flex items-center justify-between text-slate font-label-sm text-label-sm uppercase tracking-wider"><span class="">Lineage Diff Engine</span><span class="font-code-md text-code-md text-paper">v2.8.4</span></div></div></aside><div class="pl-72"><header class="fixed top-0 left-72 right-0 h-16 bg-panel border-b border-border-line z-40 px-space-lg flex items-center justify-between gap-space-lg"><div class="flex items-center gap-space-lg"><div class="flex items-center gap-space-xs px-space-sm py-1 bg-surface-container-lowest border border-border-line"><span class="inline-block w-2 h-2 rounded-full bg-signal-teal animate-pulse"></span><span class="font-label-sm text-label-sm text-signal-teal uppercase tracking-wider">Live Ingestion Active - Telegram Bot API</span></div><div class="h-4 w-px bg-border-line"></div><div class="flex items-center gap-space-xs text-slate"><span class="material-symbols-outlined text-[16px]">manage_search</span><span class="font-label-sm text-label-sm text-slate uppercase tracking-wider">Desk:</span><span class="font-code-md text-code-md text-paper">Central Investigation</span></div></div><div class="flex items-center gap-space-md"><div class="relative flex items-center"><span class="material-symbols-outlined absolute left-3 text-[18px] text-slate pointer-events-none">search</span><input class="bg-ink-navy border border-border-line pl-9 pr-3 py-1.5 w-72 text-paper placeholder-slate font-code-md text-code-md focus:border-accent-purple focus:outline-none" placeholder="Search claim hash, entity, source URL..." type="text"></div><button class="flex items-center gap-space-xs px-space-md py-1.5 bg-accent-purple text-ink-navy font-label-md text-label-md font-semibold hover:bg-primary transition-colors" type="button"><span class="material-symbols-outlined text-[16px]">add</span><span class="">+ New Watchlist</span></button><div class="h-6 w-px bg-border-line"></div><div class="flex items-center gap-space-sm pl-space-xs"><div class="flex flex-col text-right"><span class="font-body-md text-body-md font-medium text-paper leading-tight">Elena Rostova</span><span class="font-label-sm text-label-sm text-slate">Standards Desk</span></div><img alt="Profile" class="w-8 h-8 rounded-full object-cover border border-border-line" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCDTe5tWayW6Y4z6DrQeVozWOYXp7Zpr3xhcYbPj3H_piHTLR6vA7OzCYc7BwNmOGiPGSHbu_cEbgUafgmED_ZAbeExTkhNLKuhHZ6JhqPVs5OOLChA5fq47KlDMHm66qezbiWJtD0_eKZ8N9h8dulM5a4JEdsm-dl-_zKhUQvfH8zs1l9gNGFabk1obE2_gamLoEI58lEnUysq98Ng52JotGDd5GoEX5Ye76xFJpPgDxUaZ3ejyGkQFA"></div></div></header><main class="w-full pt-16 px-space-lg bg-ink-navy min-h-screen"><div class="flex flex-col w-full pb-space-xl">
+<!-- Explorer Header Section -->
+<div class="flex flex-col gap-space-md pt-space-md pb-space-lg">
+<div class="flex flex-col lg:flex-row lg:items-center justify-between gap-space-md">
+<div class="flex items-baseline gap-space-md">
+<h1 class="font-headline-xl text-headline-xl text-paper tracking-tight">Clusters Explorer</h1>
+<span class="font-label-sm text-label-sm text-slate uppercase tracking-wider">Forensic Mesh Telemetry</span>
+<span class="px-2 py-0.5 bg-surface-container-high text-accent-purple font-code-md text-[11px] border border-accent-purple/30">Variant 2 • High-Density Matrix</span>
+</div>
+<div class="flex items-center gap-space-sm self-start lg:self-auto">
+<div class="flex items-center bg-surface-container-low p-0.5 rounded-none border border-border-line">
+<button class="px-space-md py-1 text-slate hover:text-paper font-label-sm text-label-sm flex items-center gap-1 transition-colors" type="button">
+<span class="material-symbols-outlined text-[16px]">grid_view</span>
+<span class="">Grid</span>
+</button>
+<button class="px-space-md py-1 bg-surface-container-high text-accent-purple font-label-sm text-label-sm flex items-center gap-1 transition-colors border-b-2 border-accent-purple" type="button">
+<span class="material-symbols-outlined text-[16px]">view_agenda</span>
+<span class="font-semibold">List / Matrix</span>
+</button>
+</div>
+<button class="flex items-center gap-space-xs px-space-md py-1.5 bg-accent-purple text-ink-navy font-label-md text-label-md font-semibold hover:bg-primary transition-colors" type="button">
+<span class="material-symbols-outlined text-[18px]">add_alert</span>
+<span class="">+ Watchlist Rule</span>
+</button>
+</div>
+</div>
+<!-- Macro Topology Telemetry Ribbon & Filter Presets -->
+<div class="bg-panel border border-border-line p-space-md flex flex-col gap-space-md">
+<!-- Macro Distribution Bar -->
+<div class="flex flex-col md:flex-row md:items-center justify-between gap-space-sm pb-space-xs border-b border-border-line/70">
+<div class="flex items-center gap-space-md">
+<div class="flex items-center gap-1.5 text-paper font-label-sm text-label-sm uppercase tracking-wider">
+<span class="material-symbols-outlined text-[16px] text-accent-purple">donut_large</span>
+<span class="">Topology Composition</span>
+</div>
+<!-- Proportion Stacked Visual Bar -->
+<div class="flex items-center w-64 md:w-80 h-2 bg-surface-container-lowest overflow-hidden">
+<div class="bg-signal-teal h-full" style="width: 62%;" title="62% Organic"></div>
+<div class="bg-amplify-amber h-full" style="width: 24%;" title="24% Coordinated"></div>
+<div class="bg-alert-pink h-full" style="width: 14%;" title="14% Bot-Amplified"></div>
+</div>
+<div class="flex items-center gap-space-sm font-code-md text-[11px]">
+<span class="text-signal-teal font-medium">62% Organic (88)</span>
+<span class="text-slate">•</span>
+<span class="text-amplify-amber font-medium">24% Coordinated (34)</span>
+<span class="text-slate">•</span>
+<span class="text-alert-pink font-medium">14% Bot-Amplified (20)</span>
+</div>
+</div>
+<div class="flex items-center gap-2 text-slate font-code-md text-code-md">
+<span class="inline-block w-2 h-2 rounded-full bg-signal-teal animate-pulse"></span>
+<span class="text-paper">142 Ingested Clusters</span>
+<span class="text-slate">| Refreshed 18s ago</span>
+</div>
+</div>
+<!-- Filter Presets Strip & Search Bar -->
+<div class="flex flex-col xl:flex-row items-stretch xl:items-center justify-between gap-space-md">
+<!-- Quick filter pill presets -->
+<div class="flex flex-wrap items-center gap-1.5">
+<button class="px-space-md py-1 bg-accent-purple text-ink-navy font-label-sm text-label-sm font-semibold flex items-center gap-1.5 shadow-sm" type="button">
+<span class="">All Clusters</span>
+<span class="px-1.5 py-0.2 bg-ink-navy/20 font-code-md text-[10px]">142</span>
+</button>
+<button class="px-space-md py-1 bg-surface-container-low hover:bg-surface-container-high text-alert-pink font-label-sm text-label-sm flex items-center gap-1.5 transition-colors border border-alert-pink/20" type="button">
+<span class="material-symbols-outlined text-[14px]">warning</span>
+<span class="">High Danger (&gt;7.0)</span>
+<span class="px-1.5 py-0.2 bg-alert-pink/20 text-alert-pink font-code-md text-[10px]">18</span>
+</button>
+<button class="px-space-md py-1 bg-surface-container-low hover:bg-surface-container-high text-amplify-amber font-label-sm text-label-sm flex items-center gap-1.5 transition-colors border border-amplify-amber/20" type="button">
+<span class="material-symbols-outlined text-[14px]">hourglass_top</span>
+<span class="">Unchecked Debunk</span>
+<span class="px-1.5 py-0.2 bg-amplify-amber/20 text-amplify-amber font-code-md text-[10px]">7</span>
+</button>
+<button class="px-space-md py-1 bg-surface-container-low hover:bg-surface-container-high text-slate hover:text-paper font-label-sm text-label-sm flex items-center gap-1.5 transition-colors border border-border-line" type="button">
+<span class="material-symbols-outlined text-[14px]">offline_bolt</span>
+<span class="">Bot Bursts</span>
+<span class="px-1.5 py-0.2 bg-surface-container text-paper font-code-md text-[10px]">5</span>
+</button>
+<button class="px-space-md py-1 bg-surface-container-low hover:bg-surface-container-high text-signal-teal font-label-sm text-label-sm flex items-center gap-1.5 transition-colors border border-signal-teal/20" type="button">
+<span class="">Organic Trajectory</span>
+<span class="px-1.5 py-0.2 bg-signal-teal/20 text-signal-teal font-code-md text-[10px]">88</span>
+</button>
+</div>
+<!-- Filter Control Bar -->
+<div class="flex flex-wrap items-center gap-space-sm">
+<div class="relative min-w-[220px]">
+<span class="material-symbols-outlined absolute left-2.5 top-1/2 -translate-y-1/2 text-[16px] text-slate pointer-events-none">search</span>
+<input class="w-full bg-ink-navy pl-8 pr-3 py-1.5 text-paper placeholder-slate font-code-md text-code-md border border-border-line focus:outline-none focus:border-accent-purple transition-colors" placeholder="Filter narrative keyword, hash..." type="text">
+</div>
+<div class="flex items-center gap-space-xs bg-ink-navy px-space-sm py-1 border border-border-line">
+<span class="font-label-sm text-[10px] text-slate uppercase">Sort:</span>
+<select class="bg-transparent text-paper font-code-md text-code-md focus:outline-none cursor-pointer">
+<option class="bg-panel text-paper">Danger Score (Desc)</option>
+<option class="bg-panel text-paper">R_claim Velocity</option>
+<option class="bg-panel text-paper">Unrefuted Duration</option>
+<option class="bg-panel text-paper">Monitored Node Count</option>
+</select>
+</div>
+<button class="px-space-sm py-1 bg-surface-container-low hover:bg-surface-container-high text-slate hover:text-paper font-label-sm text-label-sm uppercase flex items-center gap-1 border border-border-line transition-colors" title="Export current filtered view" type="button">
+<span class="material-symbols-outlined text-[16px]">download</span>
+<span class="">CSV</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+<!-- High-Density Forensic Data Table (Tabular Triage View) -->
+<div class="bg-panel border border-border-line overflow-hidden mb-space-xl shadow-lg">
+<div class="px-space-md py-space-sm bg-surface-container-lowest border-b border-border-line flex items-center justify-between text-slate font-label-sm text-label-sm uppercase tracking-wider">
+<div class="flex items-center gap-space-md">
+<span class="text-paper font-semibold flex items-center gap-1.5">
+<span class="material-symbols-outlined text-[16px] text-accent-purple">table_chart</span>
+        Live Triage Matrix
+      </span>
+<span class="text-slate">Showing 7 Priority Candidates (100+ active monitored queue)</span>
+</div>
+<div class="flex items-center gap-space-lg font-code-md text-[11px]">
+<span class="flex items-center gap-1"><span class="w-2 h-2 bg-alert-pink inline-block"></span> High Severity (&gt; 8.0) Tinted</span>
+<span class="flex items-center gap-1"><span class="w-2 h-2 bg-amplify-amber inline-block"></span> Medium Severity (5.0 - 7.9)</span>
+<span class="flex items-center gap-1"><span class="w-2 h-2 bg-signal-teal inline-block"></span> Low Severity (&lt; 5.0)</span>
+</div>
+</div>
+<div class="overflow-x-auto">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="border-b border-border-line bg-surface-container-low/60 text-slate font-label-sm text-label-sm uppercase tracking-wider">
+<th class="py-2.5 px-space-md font-medium text-left w-12 text-center">#</th>
+<th class="py-2.5 px-space-md font-medium text-left">
+<div class="flex items-center gap-1 cursor-pointer hover:text-paper">
+<span class="">Cluster ID &amp; Narrative Headline</span>
+<span class="material-symbols-outlined text-[14px]">unfold_more</span>
+</div>
+</th>
+<th class="py-2.5 px-space-md font-medium text-left w-48">
+<div class="flex items-center gap-1 cursor-pointer hover:text-paper">
+<span class="">Topology Model</span>
+<span class="material-symbols-outlined text-[14px]">unfold_more</span>
+</div>
+</th>
+<th class="py-2.5 px-space-md font-medium text-left w-36">
+<div class="flex items-center gap-1 cursor-pointer hover:text-paper">
+<span class="">Danger Score</span>
+<span class="material-symbols-outlined text-[14px] text-accent-purple">arrow_downward</span>
+</div>
+</th>
+<th class="py-2.5 px-space-md font-medium text-left w-48">
+<div class="flex items-center gap-1 cursor-pointer hover:text-paper">
+<span class="">R_claim Velocity (24h)</span>
+<span class="material-symbols-outlined text-[14px]">unfold_more</span>
+</div>
+</th>
+<th class="py-2.5 px-space-md font-medium text-left w-44">
+<div class="flex items-center gap-1 cursor-pointer hover:text-paper">
+<span class="">Debunk Status / Exposure</span>
+<span class="material-symbols-outlined text-[14px]">unfold_more</span>
+</div>
+</th>
+<th class="py-2.5 px-space-md font-medium text-left w-44">Ingest Source &amp; Nodes</th>
+<th class="py-2.5 px-space-md font-medium text-right w-44">Quick Actions</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-border-line font-body-md text-body-md">
+<!-- ROW 1: Cluster #27 (Bot-Amplified, Critical 9.1) -->
+<tr class="bg-alert-pink/10 hover:bg-alert-pink/15 border-l-4 border-alert-pink transition-colors">
+<td class="py-3 px-space-md text-center text-slate font-code-md text-code-md">01</td>
+<td class="py-3 px-space-md">
+<div class="flex flex-col gap-0.5">
+<div class="flex items-center gap-space-sm">
+<span class="font-code-md text-code-md font-semibold text-alert-pink">#27</span>
+<span class="font-code-md text-[11px] text-slate">SHA: 9e55...3d1</span>
+<span class="px-1.5 py-0.2 bg-alert-pink/20 text-alert-pink font-label-sm text-[10px] tracking-wider uppercase font-semibold">Critical Surge</span>
+</div>
+<span class="font-headline-sm text-[16px] leading-snug text-paper font-semibold hover:text-primary transition-colors cursor-pointer">
+                Financial reserve liquidity emergency leak
+              </span>
+<span class="font-body-sm text-slate line-clamp-1">Simulated central bank bank-run dispatches across localized syndicate mirror networks</span>
+</div>
+</td>
+<td class="py-3 px-space-md">
+<div class="flex flex-col gap-1">
+<span class="inline-flex items-center gap-1 text-alert-pink font-label-sm text-label-sm font-semibold tracking-wider uppercase">
+<span class="material-symbols-outlined text-[14px]">bolt</span>
+                Bot-Amplified
+              </span>
+<span class="font-code-md text-[11px] text-slate flex items-center gap-1">
+<span class="w-1.5 h-1.5 bg-alert-pink inline-block"></span>
+                burst // mean Δ 8s
+              </span>
+</div>
+</td>
+<td class="py-3 px-space-md">
+<div class="flex items-center gap-space-sm">
+<div class="px-2 py-1 bg-alert-pink text-ink-navy font-code-md text-[13px] font-bold tracking-tight">
+                9.1
+              </div>
+<div class="flex flex-col">
+<span class="font-label-sm text-[10px] text-alert-pink uppercase font-semibold">Tier 1 Extreme</span>
+<span class="font-code-md text-[10px] text-slate">Scale / 10.0</span>
+</div>
+</div>
+</td>
+<td class="py-3 px-space-md">
+<div class="flex items-center gap-space-md">
+<div class="flex flex-col">
+<span class="font-code-lg text-code-lg text-alert-pink font-bold">4.0x</span>
+<span class="font-label-sm text-[10px] text-slate uppercase">Exp. growth</span>
+</div>
+<!-- Mini Sparkline SVG -->
+<svg class="w-20 h-6 overflow-visible" viewBox="0 0 70 24">
+<path d="M0,22 L10,20 L20,19 L30,17 L40,15 L50,8 L60,3 L70,1" fill="none" stroke="#ec4899" stroke-linecap="round" stroke-width="2"></path>
+<circle cx="70" cy="1" fill="#ec4899" r="2.5"></circle>
+</svg>
+</div>
+</td>
+<td class="py-3 px-space-md">
+<div class="flex flex-col gap-0.5">
+<span class="inline-flex items-center gap-1 text-alert-pink bg-surface-container-lowest px-1.5 py-0.5 font-code-md text-[11px] font-semibold border border-alert-pink/30 w-fit">
+<span class="">⚠️ 4.2h unrefuted</span>
+</span>
+<span class="font-label-sm text-[10px] text-slate">Exposure: ~820k reach</span>
+</div>
+</td>
+<td class="py-3 px-space-md">
+<div class="flex flex-col text-slate font-code-md text-[11px]">
+<span class="text-paper font-medium flex items-center gap-1">
+<span class="material-symbols-outlined text-[13px] text-slate">share</span>
+                210 nodes
+              </span>
+<span class="text-slate truncate">Telegram TG-Feed // 14 channels</span>
+</div>
+</td>
+<td class="py-3 px-space-md text-right">
+<div class="flex items-center justify-end gap-1">
+<button class="p-1.5 bg-surface-container-low hover:bg-accent-purple hover:text-ink-navy text-paper transition-colors" title="Inspect River (Detail)" type="button">
+<span class="material-symbols-outlined text-[16px]">account_tree</span>
+</button>
+<button class="p-1.5 bg-surface-container-low hover:bg-accent-purple hover:text-ink-navy text-paper transition-colors" title="Set Watchlist Rule" type="button">
+<span class="material-symbols-outlined text-[16px]">add_alert</span>
+</button>
+<button class="p-1.5 bg-alert-pink/20 hover:bg-alert-pink hover:text-ink-navy text-alert-pink transition-colors" title="Flag Verification / Priority Escalation" type="button">
+<span class="material-symbols-outlined text-[16px]">flag</span>
+</button>
+</div>
+</td>
+</tr>
+<!-- ROW 2: Cluster #31 (Bot-Amplified, Critical 8.7) -->
+<tr class="bg-alert-pink/10 hover:bg-alert-pink/15 border-l-4 border-alert-pink transition-colors">
+<td class="py-3 px-space-md text-center text-slate font-code-md text-code-md">02</td>
+<td class="py-3 px-space-md">
+<div class="flex flex-col gap-0.5">
+<div class="flex items-center gap-space-sm">
+<span class="font-code-md text-code-md font-semibold text-alert-pink">#31</span>
+<span class="font-code-md text-[11px] text-slate">SHA: 3c24...00f</span>
+<span class="px-1.5 py-0.2 bg-alert-pink/20 text-alert-pink font-label-sm text-[10px] tracking-wider uppercase font-semibold">Coordinated Wave</span>
+</div>
+<span class="font-headline-sm text-[16px] leading-snug text-paper font-semibold hover:text-primary transition-colors cursor-pointer">
+                Contaminated water supply panic broadcast
+              </span>
+<span class="font-body-sm text-slate line-clamp-1">Synthesized toxic spill advisories targeting metropolitan utilities</span>
+</div>
+</td>
+<td class="py-3 px-space-md">
+<div class="flex flex-col gap-1">
+<span class="inline-flex items-center gap-1 text-alert-pink font-label-sm text-label-sm font-semibold tracking-wider uppercase">
+<span class="material-symbols-outlined text-[14px]">bolt</span>
+                Bot-Amplified
+              </span>
+<span class="font-code-md text-[11px] text-slate flex items-center gap-1">
+<span class="w-1.5 h-1.5 bg-alert-pink inline-block"></span>
+                burst // mean Δ 14s
+              </span>
+</div>
+</td>
+<td class="py-3 px-space-md">
+<div class="flex items-center gap-space-sm">
+<div class="px-2 py-1 bg-alert-pink text-ink-navy font-code-md text-[13px] font-bold tracking-tight">
+                8.7
+              </div>
+<div class="flex flex-col">
+<span class="font-label-sm text-[10px] text-alert-pink uppercase font-semibold">Tier 1 Severe</span>
+<span class="font-code-md text-[10px] text-slate">Scale / 10.0</span>
+</div>
+</div>
+</td>
+<td class="py-3 px-space-md">
+<div class="flex items-center gap-space-md">
+<div class="flex flex-col">
+<span class="font-code-lg text-code-lg text-alert-pink font-bold">3.2x</span>
+<span class="font-label-sm text-[10px] text-slate uppercase">High Velocity</span>
+</div>
+<!-- Mini Sparkline SVG -->
+<svg class="w-20 h-6 overflow-visible" viewBox="0 0 70 24">
+<path d="M0,23 L12,21 L24,18 L36,19 L48,13 L58,7 L70,2" fill="none" stroke="#ec4899" stroke-linecap="round" stroke-width="2"></path>
+<circle cx="70" cy="2" fill="#ec4899" r="2.5"></circle>
+</svg>
+</div>
+</td>
+<td class="py-3 px-space-md">
+<div class="flex flex-col gap-0.5">
+<span class="inline-flex items-center gap-1 text-alert-pink bg-surface-container-lowest px-1.5 py-0.5 font-code-md text-[11px] font-semibold border border-alert-pink/30 w-fit">
+<span class="">⚠️ 3.1h unrefuted</span>
+</span>
+<span class="font-label-sm text-[10px] text-slate">Fact-check: Assigned</span>
+</div>
+</td>
+<td class="py-3 px-space-md">
+<div class="flex flex-col text-slate font-code-md text-[11px]">
+<span class="text-paper font-medium flex items-center gap-1">
+<span class="material-symbols-outlined text-[13px] text-slate">share</span>
+                142 nodes
+              </span>
+<span class="text-slate truncate">X (Twitter) &amp; VK Mirror Bots</span>
+</div>
+</td>
+<td class="py-3 px-space-md text-right">
+<div class="flex items-center justify-end gap-1">
+<button class="p-1.5 bg-surface-container-low hover:bg-accent-purple hover:text-ink-navy text-paper transition-colors" title="Inspect River (Detail)" type="button">
+<span class="material-symbols-outlined text-[16px]">account_tree</span>
+</button>
+<button class="p-1.5 bg-surface-container-low hover:bg-accent-purple hover:text-ink-navy text-paper transition-colors" title="Set Watchlist Rule" type="button">
+<span class="material-symbols-outlined text-[16px]">add_alert</span>
+</button>
+<button class="p-1.5 bg-alert-pink/20 hover:bg-alert-pink hover:text-ink-navy text-alert-pink transition-colors" title="Flag Verification / Priority Escalation" type="button">
+<span class="material-symbols-outlined text-[16px]">flag</span>
+</button>
+</div>
+</td>
+</tr>
+<!-- ROW 3: Cluster #22 (Coordinated, Danger 6.4) -->
+<tr class="hover:bg-surface-container transition-colors border-l-4 border-amplify-amber">
+<td class="py-3 px-space-md text-center text-slate font-code-md text-code-md">03</td>
+<td class="py-3 px-space-md">
+<div class="flex flex-col gap-0.5">
+<div class="flex items-center gap-space-sm">
+<span class="font-code-md text-code-md font-semibold text-paper">#22</span>
+<span class="font-code-md text-[11px] text-slate">SHA: 7f01...d8e</span>
+<span class="px-1.5 py-0.2 bg-amplify-amber/15 text-amplify-amber font-label-sm text-[10px] tracking-wider uppercase font-semibold">Elevated</span>
+</div>
+<span class="font-headline-sm text-[16px] leading-snug text-paper font-semibold hover:text-primary transition-colors cursor-pointer">
+                Voting machine ballot count falsification
+              </span>
+<span class="font-body-sm text-slate line-clamp-1">Doctored audit logs with fabricated hash mismatches</span>
+</div>
+</td>
+<td class="py-3 px-space-md">
+<div class="flex flex-col gap-1">
+<span class="inline-flex items-center gap-1 text-amplify-amber font-label-sm text-label-sm font-semibold tracking-wider uppercase">
+<span class="material-symbols-outlined text-[14px]">schema</span>
+                Coordinated
+              </span>
+<span class="font-code-md text-[11px] text-slate flex items-center gap-1">
+<span class="w-1.5 h-1.5 bg-amplify-amber inline-block"></span>
+                mesh // multi-relay
+              </span>
+</div>
+</td>
+<td class="py-3 px-space-md">
+<div class="flex items-center gap-space-sm">
+<div class="px-2 py-1 bg-amplify-amber text-ink-navy font-code-md text-[13px] font-bold tracking-tight">
+                6.4
+              </div>
+<div class="flex flex-col">
+<span class="font-label-sm text-[10px] text-amplify-amber uppercase font-semibold">Tier 2 Warning</span>
+<span class="font-code-md text-[10px] text-slate">Scale / 10.0</span>
+</div>
+</div>
+</td>
+<td class="py-3 px-space-md">
+<div class="flex items-center gap-space-md">
+<div class="flex flex-col">
+<span class="font-code-lg text-code-lg text-amplify-amber font-bold">1.9x</span>
+<span class="font-label-sm text-[10px] text-slate uppercase">Moderate</span>
+</div>
+<!-- Mini Sparkline SVG -->
+<svg class="w-20 h-6 overflow-visible" viewBox="0 0 70 24">
+<path d="M0,20 L15,18 L30,19 L45,14 L55,12 L70,8" fill="none" stroke="#f0a020" stroke-linecap="round" stroke-width="2"></path>
+<circle cx="70" cy="8" fill="#f0a020" r="2.5"></circle>
+</svg>
+</div>
+</td>
+<td class="py-3 px-space-md">
+<div class="flex flex-col gap-0.5">
+<span class="inline-flex items-center gap-1 text-amplify-amber bg-surface-container-lowest px-1.5 py-0.5 font-code-md text-[11px] font-medium border border-amplify-amber/30 w-fit">
+<span class="">⚠️ 1.8h unrefuted</span>
+</span>
+<span class="font-label-sm text-[10px] text-slate">Debunk in-drafting</span>
+</div>
+</td>
+<td class="py-3 px-space-md">
+<div class="flex flex-col text-slate font-code-md text-[11px]">
+<span class="text-paper font-medium flex items-center gap-1">
+<span class="material-symbols-outlined text-[13px] text-slate">share</span>
+                86 nodes
+              </span>
+<span class="text-slate truncate">Public Fora &amp; Reddit Clones</span>
+</div>
+</td>
+<td class="py-3 px-space-md text-right">
+<div class="flex items-center justify-end gap-1">
+<button class="p-1.5 bg-surface-container-low hover:bg-accent-purple hover:text-ink-navy text-paper transition-colors" title="Inspect River (Detail)" type="button">
+<span class="material-symbols-outlined text-[16px]">account_tree</span>
+</button>
+<button class="p-1.5 bg-surface-container-low hover:bg-accent-purple hover:text-ink-navy text-paper transition-colors" title="Set Watchlist Rule" type="button">
+<span class="material-symbols-outlined text-[16px]">add_alert</span>
+</button>
+<button class="p-1.5 bg-surface-container-low hover:bg-alert-pink hover:text-ink-navy text-slate hover:text-alert-pink transition-colors" title="Flag Verification" type="button">
+<span class="material-symbols-outlined text-[16px]">flag</span>
+</button>
+</div>
+</td>
+</tr>
+<!-- ROW 4: Cluster #18 (Coordinated, Danger 5.5) -->
+<tr class="hover:bg-surface-container transition-colors border-l-4 border-amplify-amber">
+<td class="py-3 px-space-md text-center text-slate font-code-md text-code-md">04</td>
+<td class="py-3 px-space-md">
+<div class="flex flex-col gap-0.5">
+<div class="flex items-center gap-space-sm">
+<span class="font-code-md text-code-md font-semibold text-paper">#18</span>
+<span class="font-code-md text-[11px] text-slate">SHA: 48aa...cc2</span>
+</div>
+<span class="font-headline-sm text-[16px] leading-snug text-paper font-semibold hover:text-primary transition-colors cursor-pointer">
+                Border convoy supply stoppage claim
+              </span>
+<span class="font-body-sm text-slate line-clamp-1">Manipulated traffic cam stills purporting complete commercial lane closure</span>
+</div>
+</td>
+<td class="py-3 px-space-md">
+<div class="flex flex-col gap-1">
+<span class="inline-flex items-center gap-1 text-amplify-amber font-label-sm text-label-sm font-semibold tracking-wider uppercase">
+<span class="material-symbols-outlined text-[14px]">av_timer</span>
+                Coordinated
+              </span>
+<span class="font-code-md text-[11px] text-slate flex items-center gap-1">
+<span class="w-1.5 h-1.5 bg-amplify-amber inline-block"></span>
+                timestamp sync // Δ 2m
+              </span>
+</div>
+</td>
+<td class="py-3 px-space-md">
+<div class="flex items-center gap-space-sm">
+<div class="px-2 py-1 bg-amplify-amber/80 text-ink-navy font-code-md text-[13px] font-bold tracking-tight">
+                5.5
+              </div>
+<div class="flex flex-col">
+<span class="font-label-sm text-[10px] text-amplify-amber uppercase">Tier 2 Moderate</span>
+<span class="font-code-md text-[10px] text-slate">Scale / 10.0</span>
+</div>
+</div>
+</td>
+<td class="py-3 px-space-md">
+<div class="flex items-center gap-space-md">
+<div class="flex flex-col">
+<span class="font-code-lg text-code-lg text-paper font-bold">1.2x</span>
+<span class="font-label-sm text-[10px] text-slate uppercase">Stable Flow</span>
+</div>
+<!-- Mini Sparkline SVG -->
+<svg class="w-20 h-6 overflow-visible" viewBox="0 0 70 24">
+<path d="M0,17 L15,19 L30,16 L45,15 L60,14 L70,12" fill="none" stroke="#f0a020" stroke-linecap="round" stroke-width="2"></path>
+<circle cx="70" cy="12" fill="#f0a020" r="2.5"></circle>
+</svg>
+</div>
+</td>
+<td class="py-3 px-space-md">
+<div class="flex flex-col gap-0.5">
+<span class="inline-flex items-center gap-1 text-slate bg-surface-container-lowest px-1.5 py-0.5 font-code-md text-[11px]">
+<span class="material-symbols-outlined text-[12px] text-signal-teal">check_circle</span>
+<span class="">Debunk Published</span>
+</span>
+<span class="font-label-sm text-[10px] text-signal-teal">Resolved: AFP Fact</span>
+</div>
+</td>
+<td class="py-3 px-space-md">
+<div class="flex flex-col text-slate font-code-md text-[11px]">
+<span class="text-paper font-medium flex items-center gap-1">
+<span class="material-symbols-outlined text-[13px] text-slate">share</span>
+                52 nodes
+              </span>
+<span class="text-slate truncate">TikTok Reposts &amp; WhatsApp groups</span>
+</div>
+</td>
+<td class="py-3 px-space-md text-right">
+<div class="flex items-center justify-end gap-1">
+<button class="p-1.5 bg-surface-container-low hover:bg-accent-purple hover:text-ink-navy text-paper transition-colors" title="Inspect River (Detail)" type="button">
+<span class="material-symbols-outlined text-[16px]">account_tree</span>
+</button>
+<button class="p-1.5 bg-surface-container-low hover:bg-accent-purple hover:text-ink-navy text-paper transition-colors" title="Set Watchlist Rule" type="button">
+<span class="material-symbols-outlined text-[16px]">add_alert</span>
+</button>
+<button class="p-1.5 bg-surface-container-low hover:bg-alert-pink hover:text-ink-navy text-slate hover:text-alert-pink transition-colors" title="Flag Verification" type="button">
+<span class="material-symbols-outlined text-[16px]">flag</span>
+</button>
+</div>
+</td>
+</tr>
+<!-- ROW 5: Cluster #14 (Organic, Danger 3.1) -->
+<tr class="hover:bg-surface-container transition-colors border-l-4 border-signal-teal">
+<td class="py-3 px-space-md text-center text-slate font-code-md text-code-md">05</td>
+<td class="py-3 px-space-md">
+<div class="flex flex-col gap-0.5">
+<div class="flex items-center gap-space-sm">
+<span class="font-code-md text-code-md font-semibold text-paper">#14</span>
+<span class="font-code-md text-[11px] text-slate">SHA: e8b9...4a1</span>
+</div>
+<span class="font-headline-sm text-[16px] leading-snug text-paper font-semibold hover:text-primary transition-colors cursor-pointer">
+                Subsidies rumor in regional Telegram forwards
+              </span>
+<span class="font-body-sm text-slate line-clamp-1">Unverified screenshots of agricultural grant deadline rollbacks</span>
+</div>
+</td>
+<td class="py-3 px-space-md">
+<div class="flex flex-col gap-1">
+<span class="inline-flex items-center gap-1 text-signal-teal font-label-sm text-label-sm font-semibold tracking-wider uppercase">
+<span class="material-symbols-outlined text-[14px]">hub</span>
+                Organic
+              </span>
+<span class="font-code-md text-[11px] text-slate flex items-center gap-1">
+<span class="w-1.5 h-1.5 bg-signal-teal inline-block"></span>
+                hub-spoke // standard
+              </span>
+</div>
+</td>
+<td class="py-3 px-space-md">
+<div class="flex items-center gap-space-sm">
+<div class="px-2 py-1 bg-signal-teal text-ink-navy font-code-md text-[13px] font-bold tracking-tight">
+                3.1
+              </div>
+<div class="flex flex-col">
+<span class="font-label-sm text-[10px] text-signal-teal uppercase">Tier 3 Low</span>
+<span class="font-code-md text-[10px] text-slate">Scale / 10.0</span>
+</div>
+</div>
+</td>
+<td class="py-3 px-space-md">
+<div class="flex items-center gap-space-md">
+<div class="flex flex-col">
+<span class="font-code-lg text-code-lg text-paper font-semibold">0.8x</span>
+<span class="font-label-sm text-[10px] text-slate uppercase">Sub-critical</span>
+</div>
+<!-- Mini Sparkline SVG -->
+<svg class="w-20 h-6 overflow-visible" viewBox="0 0 70 24">
+<path d="M0,12 L15,14 L30,13 L45,17 L60,18 L70,19" fill="none" stroke="#2f9e8f" stroke-linecap="round" stroke-width="2"></path>
+<circle cx="70" cy="19" fill="#2f9e8f" r="2.5"></circle>
+</svg>
+</div>
+</td>
+<td class="py-3 px-space-md">
+<div class="flex flex-col gap-0.5">
+<span class="inline-flex items-center gap-1 text-slate bg-surface-container-lowest px-1.5 py-0.5 font-code-md text-[11px]">
+<span class="">Monitoring (Under review)</span>
+</span>
+<span class="font-label-sm text-[10px] text-slate">No action required</span>
+</div>
+</td>
+<td class="py-3 px-space-md">
+<div class="flex flex-col text-slate font-code-md text-[11px]">
+<span class="text-paper font-medium flex items-center gap-1">
+<span class="material-symbols-outlined text-[13px] text-slate">share</span>
+                24 nodes
+              </span>
+<span class="text-slate truncate">Regional Agri-Hubs</span>
+</div>
+</td>
+<td class="py-3 px-space-md text-right">
+<div class="flex items-center justify-end gap-1">
+<button class="p-1.5 bg-surface-container-low hover:bg-accent-purple hover:text-ink-navy text-paper transition-colors" title="Inspect River (Detail)" type="button">
+<span class="material-symbols-outlined text-[16px]">account_tree</span>
+</button>
+<button class="p-1.5 bg-surface-container-low hover:bg-accent-purple hover:text-ink-navy text-paper transition-colors" title="Set Watchlist Rule" type="button">
+<span class="material-symbols-outlined text-[16px]">add_alert</span>
+</button>
+<button class="p-1.5 bg-surface-container-low hover:bg-alert-pink hover:text-ink-navy text-slate hover:text-alert-pink transition-colors" title="Flag Verification" type="button">
+<span class="material-symbols-outlined text-[16px]">flag</span>
+</button>
+</div>
+</td>
+</tr>
+<!-- ROW 6: Cluster #09 (Organic, Danger 2.0) -->
+<tr class="hover:bg-surface-container transition-colors border-l-4 border-signal-teal">
+<td class="py-3 px-space-md text-center text-slate font-code-md text-code-md">06</td>
+<td class="py-3 px-space-md">
+<div class="flex flex-col gap-0.5">
+<div class="flex items-center gap-space-sm">
+<span class="font-code-md text-code-md font-semibold text-paper">#09</span>
+<span class="font-code-md text-[11px] text-slate">SHA: b107...993</span>
+</div>
+<span class="font-headline-sm text-[16px] leading-snug text-paper font-semibold hover:text-primary transition-colors cursor-pointer">
+                Infrastructure outage statement re-edit
+              </span>
+<span class="font-body-sm text-slate line-clamp-1">Editorial typo exaggeration on public transit repair bulletin</span>
+</div>
+</td>
+<td class="py-3 px-space-md">
+<div class="flex flex-col gap-1">
+<span class="inline-flex items-center gap-1 text-signal-teal font-label-sm text-label-sm font-semibold tracking-wider uppercase">
+<span class="material-symbols-outlined text-[14px]">hub</span>
+                Organic
+              </span>
+<span class="font-code-md text-[11px] text-slate flex items-center gap-1">
+<span class="w-1.5 h-1.5 bg-signal-teal inline-block"></span>
+                hub-spoke // isolated
+              </span>
+</div>
+</td>
+<td class="py-3 px-space-md">
+<div class="flex items-center gap-space-sm">
+<div class="px-2 py-1 bg-signal-teal text-ink-navy font-code-md text-[13px] font-bold tracking-tight">
+                2.0
+              </div>
+<div class="flex flex-col">
+<span class="font-label-sm text-[10px] text-signal-teal uppercase">Tier 3 Low</span>
+<span class="font-code-md text-[10px] text-slate">Scale / 10.0</span>
+</div>
+</div>
+</td>
+<td class="py-3 px-space-md">
+<div class="flex items-center gap-space-md">
+<div class="flex flex-col">
+<span class="font-code-lg text-code-lg text-paper font-semibold">0.5x</span>
+<span class="font-label-sm text-[10px] text-slate uppercase">Decaying</span>
+</div>
+<!-- Mini Sparkline SVG -->
+<svg class="w-20 h-6 overflow-visible" viewBox="0 0 70 24">
+<path d="M0,8 L15,10 L30,14 L45,17 L60,20 L70,22" fill="none" stroke="#2f9e8f" stroke-linecap="round" stroke-width="2"></path>
+<circle cx="70" cy="22" fill="#2f9e8f" r="2.5"></circle>
+</svg>
+</div>
+</td>
+<td class="py-3 px-space-md">
+<div class="flex flex-col gap-0.5">
+<span class="inline-flex items-center gap-1 text-slate bg-surface-container-lowest px-1.5 py-0.5 font-code-md text-[11px]">
+<span class="material-symbols-outlined text-[12px] text-signal-teal">check_circle</span>
+<span class="">Official Clarified</span>
+</span>
+<span class="font-label-sm text-[10px] text-slate">City Agency Memo</span>
+</div>
+</td>
+<td class="py-3 px-space-md">
+<div class="flex flex-col text-slate font-code-md text-[11px]">
+<span class="text-paper font-medium flex items-center gap-1">
+<span class="material-symbols-outlined text-[13px] text-slate">share</span>
+                15 nodes
+              </span>
+<span class="text-slate truncate">Local News Forums</span>
+</div>
+</td>
+<td class="py-3 px-space-md text-right">
+<div class="flex items-center justify-end gap-1">
+<button class="p-1.5 bg-surface-container-low hover:bg-accent-purple hover:text-ink-navy text-paper transition-colors" title="Inspect River (Detail)" type="button">
+<span class="material-symbols-outlined text-[16px]">account_tree</span>
+</button>
+<button class="p-1.5 bg-surface-container-low hover:bg-accent-purple hover:text-ink-navy text-paper transition-colors" title="Set Watchlist Rule" type="button">
+<span class="material-symbols-outlined text-[16px]">add_alert</span>
+</button>
+<button class="p-1.5 bg-surface-container-low hover:bg-alert-pink hover:text-ink-navy text-slate hover:text-alert-pink transition-colors" title="Flag Verification" type="button">
+<span class="material-symbols-outlined text-[16px]">flag</span>
+</button>
+</div>
+</td>
+</tr>
+<!-- ROW 7: Cluster #04 (Organic, Danger 1.4) -->
+<tr class="hover:bg-surface-container transition-colors border-l-4 border-signal-teal">
+<td class="py-3 px-space-md text-center text-slate font-code-md text-code-md">07</td>
+<td class="py-3 px-space-md">
+<div class="flex flex-col gap-0.5">
+<div class="flex items-center gap-space-sm">
+<span class="font-code-md text-code-md font-semibold text-paper">#04</span>
+<span class="font-code-md text-[11px] text-slate">SHA: 5a19...ee8</span>
+</div>
+<span class="font-headline-sm text-[16px] leading-snug text-paper font-semibold hover:text-primary transition-colors cursor-pointer">
+                Medical university exam rescheduling hoax
+              </span>
+<span class="font-body-sm text-slate line-clamp-1">Forged dean letter circulating in student chat channels</span>
+</div>
+</td>
+<td class="py-3 px-space-md">
+<div class="flex flex-col gap-1">
+<span class="inline-flex items-center gap-1 text-signal-teal font-label-sm text-label-sm font-semibold tracking-wider uppercase">
+<span class="material-symbols-outlined text-[14px]">hub</span>
+                Organic
+              </span>
+<span class="font-code-md text-[11px] text-slate flex items-center gap-1">
+<span class="w-1.5 h-1.5 bg-signal-teal inline-block"></span>
+                isolated chain
+              </span>
+</div>
+</td>
+<td class="py-3 px-space-md">
+<div class="flex items-center gap-space-sm">
+<div class="px-2 py-1 bg-signal-teal/80 text-ink-navy font-code-md text-[13px] font-bold tracking-tight">
+                1.4
+              </div>
+<div class="flex flex-col">
+<span class="font-label-sm text-[10px] text-signal-teal uppercase">Tier 3 Negligible</span>
+<span class="font-code-md text-[10px] text-slate">Scale / 10.0</span>
+</div>
+</div>
+</td>
+<td class="py-3 px-space-md">
+<div class="flex items-center gap-space-md">
+<div class="flex flex-col">
+<span class="font-code-lg text-code-lg text-paper font-semibold">0.3x</span>
+<span class="font-label-sm text-[10px] text-slate uppercase">Stagnant</span>
+</div>
+<!-- Mini Sparkline SVG -->
+<svg class="w-20 h-6 overflow-visible" viewBox="0 0 70 24">
+<path d="M0,15 L15,16 L30,17 L45,19 L60,21 L70,23" fill="none" stroke="#2f9e8f" stroke-linecap="round" stroke-width="2"></path>
+<circle cx="70" cy="23" fill="#2f9e8f" r="2.5"></circle>
+</svg>
+</div>
+</td>
+<td class="py-3 px-space-md">
+<div class="flex flex-col gap-0.5">
+<span class="inline-flex items-center gap-1 text-slate bg-surface-container-lowest px-1.5 py-0.5 font-code-md text-[11px]">
+<span class="material-symbols-outlined text-[12px] text-signal-teal">check_circle</span>
+<span class="">Self-correcting</span>
+</span>
+<span class="font-label-sm text-[10px] text-slate">Student Senate Debunk</span>
+</div>
+</td>
+<td class="py-3 px-space-md">
+<div class="flex flex-col text-slate font-code-md text-[11px]">
+<span class="text-paper font-medium flex items-center gap-1">
+<span class="material-symbols-outlined text-[13px] text-slate">share</span>
+                8 nodes
+              </span>
+<span class="text-slate truncate">Telegram Student Chats</span>
+</div>
+</td>
+<td class="py-3 px-space-md text-right">
+<div class="flex items-center justify-end gap-1">
+<button class="p-1.5 bg-surface-container-low hover:bg-accent-purple hover:text-ink-navy text-paper transition-colors" title="Inspect River (Detail)" type="button">
+<span class="material-symbols-outlined text-[16px]">account_tree</span>
+</button>
+<button class="p-1.5 bg-surface-container-low hover:bg-accent-purple hover:text-ink-navy text-paper transition-colors" title="Set Watchlist Rule" type="button">
+<span class="material-symbols-outlined text-[16px]">add_alert</span>
+</button>
+<button class="p-1.5 bg-surface-container-low hover:bg-alert-pink hover:text-ink-navy text-slate hover:text-alert-pink transition-colors" title="Flag Verification" type="button">
+<span class="material-symbols-outlined text-[16px]">flag</span>
+</button>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<!-- Table Pagination & Matrix Status Footer -->
+<div class="px-space-md py-space-sm bg-surface-container-low border-t border-border-line flex flex-col sm:flex-row items-center justify-between gap-space-sm">
+<div class="flex items-center gap-space-md text-slate font-code-md text-code-md">
+<span class="">Rows per desk view: <strong class="text-paper">25</strong> (High Density Triage)</span>
+<span class="text-border-line">|</span>
+<span class="">Live sync: <span class="text-signal-teal font-medium">WebSocket 0 latency</span></span>
+</div>
+<div class="flex items-center gap-space-xs">
+<button class="px-space-sm py-1 bg-surface-container text-slate hover:text-paper font-code-md text-code-md disabled:opacity-40" disabled="" type="button">Prev</button>
+<button class="px-space-sm py-1 bg-accent-purple text-ink-navy font-code-md text-code-md font-semibold" type="button">1</button>
+<button class="px-space-sm py-1 bg-surface-container hover:bg-surface-container-high text-paper font-code-md text-code-md" type="button">2</button>
+<button class="px-space-sm py-1 bg-surface-container hover:bg-surface-container-high text-paper font-code-md text-code-md" type="button">3</button>
+<span class="text-slate px-1">...</span>
+<button class="px-space-sm py-1 bg-surface-container hover:bg-surface-container-high text-paper font-code-md text-code-md" type="button">6</button>
+<button class="px-space-sm py-1 bg-surface-container text-paper hover:bg-surface-container-high font-code-md text-code-md" type="button">Next</button>
+</div>
+</div>
+</div>
+<!-- Operational Audit & Ingestion Telemetry Footer Section -->
+<div class="bg-panel p-space-lg flex flex-col xl:flex-row items-start xl:items-center justify-between gap-space-lg">
+<div class="flex items-center gap-space-md">
+<div class="w-10 h-10 bg-surface-container-low flex items-center justify-center text-accent-purple">
+<span class="material-symbols-outlined text-[24px]">terminal</span>
+</div>
+<div class="flex flex-col">
+<span class="font-body-md text-body-md font-medium text-paper">Cluster Vector Resolution Pipeline Active</span>
+<span class="font-code-md text-code-md text-slate">Continuous affinity re-clustering running at batch rate 200 ms / 500 hashes</span>
+</div>
+</div>
+<div class="flex items-center gap-space-lg w-full xl:w-auto justify-between xl:justify-end">
+<div class="flex items-center gap-space-md">
+<div class="flex flex-col text-right">
+<span class="font-label-sm text-label-sm text-slate uppercase">Queue Latency</span>
+<span class="font-code-md text-code-md text-signal-teal">12ms avg</span>
+</div>
+<div class="flex flex-col text-right">
+<span class="font-label-sm text-label-sm text-slate uppercase">Node Memory</span>
+<span class="font-code-md text-code-md text-paper">41.8%</span>
+</div>
+</div>
+<div class="flex items-center gap-space-xs">
+<button class="px-space-md py-1.5 bg-surface-container-low text-paper hover:bg-surface-container-high font-label-sm text-label-sm uppercase tracking-wider transition-colors" type="button">
+          Export Manifest
+        </button>
+<button class="px-space-md py-1.5 bg-accent-purple text-ink-navy font-label-md text-label-md font-semibold hover:bg-primary transition-colors" type="button">
+          Sync Vector DB
+        </button>
+</div>
+</div>
+</div>
+<!-- Wireframe Source Reference Asset Integration -->
+<div class="mt-space-lg p-space-md bg-surface-container-low flex flex-col md:flex-row items-center justify-between gap-space-md">
+<div class="flex items-center gap-space-md">
+
+<div class="flex flex-col">
+<span class="font-label-sm text-label-sm text-slate uppercase tracking-wider">Reference Schematic</span>
+
+</div>
+</div>
+<div class="flex items-center gap-space-sm text-slate font-code-md text-code-md">
+<span class="inline-block w-2 h-2 rounded-full bg-signal-teal"></span>
+<span class="">Status: Topology Map In Sync</span>
+</div>
+</div>
+</div></main></div>
+
+</body></html>
