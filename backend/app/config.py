@@ -14,6 +14,8 @@ class Settings(BaseSettings):
     BURSTINESS_INTER_ARRIVAL_THRESHOLD_SECONDS: float = 60.0
     API_KEY: str | None = None
     ANTHROPIC_TIMEOUT_SECONDS: float = 30.0
+    ANTHROPIC_MAX_RETRIES: int = 3
+    ANTHROPIC_RETRY_BASE_SECONDS: float = 1.0
 
     class Config:
         env_file = ".env"

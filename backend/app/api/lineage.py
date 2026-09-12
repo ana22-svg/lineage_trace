@@ -22,7 +22,7 @@ async def list_cluster_edges(cluster_id: str, page: int = 1, page_size: int = 50
     if await crud.get_cluster(db, cluster_id) is None:
         raise HTTPException(404, "Cluster not found")
     page_size = min(max(page_size, 1), 100)
-    rows = list((await db.scalars(select(LineageEdge).where(LineageEdge.cluster_id == cluster_id, LineageEdge.is_flagged_gap.is_(False)).order_by(LineageEdge.created_at).offset((max(page, 1)-1)*page_size).limit(page_size))).all())
+    rows = list((await db.scalars(select(LineageEdge).where(LineageEdge.cluster_id == cluster_id).order_by(LineageEdge.created_at).offset((max(page, 1)-1)*page_size).limit(page_size))).all())
     return [{"id": str(row.id), "parent_message_id": str(row.parent_message_id), "child_message_id": str(row.child_message_id), "similarity_score": row.similarity_score, "similarity_decay": row.similarity_decay} for row in rows]
 
 @router.get("/{cluster_id}/lineage", response_model=LineageGraphResponse)
@@ -51,7 +51,7 @@ async def get_cluster_lineage(cluster_id: str, db: AsyncSession = Depends(get_db
         "node_count": len(nodes),
         "edge_count": len(edges),
         "nodes": [{"id": str(n.id), "text": n.text, "timestamp": n.timestamp, "language": n.language} for n in nodes],
-        "edges": [{"id": str(e.id), "parent_message_id": str(e.parent_message_id), "child_message_id": str(e.child_message_id), "similarity": e.similarity_score, "decay": e.similarity_decay, "flagged_gap": e.is_flagged_gap} for e in edges],
+        "edges": [{"id": str(e.id), "parent_message_id": str(e.parent_message_id), "child_message_id": str(e.child_message_id), "similarity": e.similarity_score, "decay": e.similarity_decay} for e in edges],
         "r_claim_series": [],
         "debunk_lag": {
             "has_debunk": False,

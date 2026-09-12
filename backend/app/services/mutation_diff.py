@@ -21,7 +21,16 @@ async def compute_diff(parent_text: str, child_text: str) -> dict:
     Format: {{ "changes": [ {{ "field": "...", "old": "...", "new": "...", "category": "..." }} ] }}
     """
     
-    response = await client.messages.create(model=settings.ANTHROPIC_MODEL, max_tokens=1200, system="Return only valid JSON.", messages=[{"role": "user", "content": prompt}])
+    response = None
+    for attempt in range(settings.ANTHROPIC_MAX_RETRIES):
+        try:
+            response = await client.messages.create(model=settings.ANTHROPIC_MODEL, max_tokens=1200, system="Return only valid JSON.", messages=[{"role": "user", "content": prompt}])
+            break
+        except Exception:
+            logger.exception("anthropic_diff_attempt_failed", extra={"attempt": attempt + 1})
+            if attempt + 1 == settings.ANTHROPIC_MAX_RETRIES:
+                raise
+            await asyncio.sleep(settings.ANTHROPIC_RETRY_BASE_SECONDS * (2 ** attempt))
     raw_response = "".join(getattr(block, "text", "") for block in response.content)
     try:
         parsed = json.loads(raw_response)

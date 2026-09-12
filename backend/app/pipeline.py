@@ -13,6 +13,7 @@ from app.models.channel import MonitoredChannel
 from app.services import embedding, clustering, lineage, mutation_diff, danger_score
 from app.config import settings
 from app.services.watchlist import scan_watch_conditions
+from app.services.cluster_refresh import refresh_cluster
 
 async def process_message(msg: NormalizedMessage, db: AsyncSession) -> dict:
     """Persist one message and either a confirmed edge or a lineage gap."""
@@ -53,16 +54,16 @@ async def process_message(msg: NormalizedMessage, db: AsyncSession) -> dict:
             if data["is_flagged_gap"]:
                 db.add(LineageGap(cluster_id=cluster.id, candidate_parent_message_id=parent.id, child_message_id=raw.id, similarity_score=data["similarity_score"], similarity_decay=data["similarity_decay"], timestamp_delta_seconds=delta, detail_json={"reason": "similarity_decay_exceeded", "threshold": settings.EDGE_DECAY_THRESHOLD}))
             else:
-                edge = LineageEdge(cluster_id=cluster.id, parent_message_id=parent.id, child_message_id=raw.id, similarity_score=data["similarity_score"], similarity_decay=data["similarity_decay"], is_flagged_gap=False, timestamp_delta_seconds=delta)
+                edge = LineageEdge(cluster_id=cluster.id, parent_message_id=parent.id, child_message_id=raw.id, similarity_score=data["similarity_score"], similarity_decay=data["similarity_decay"], timestamp_delta_seconds=delta)
                 db.add(edge); await db.flush()
-                confirmed_edges = list((await db.scalars(select(LineageEdge).where(LineageEdge.cluster_id == cluster.id, LineageEdge.is_flagged_gap.is_(False)))).all())
+                confirmed_edges = list((await db.scalars(select(LineageEdge).where(LineageEdge.cluster_id == cluster.id))).all())
                 graph = nx.DiGraph((e.parent_message_id, e.child_message_id) for e in confirmed_edges)
                 downstream_reach = len(nx.descendants(graph, edge.child_message_id))
                 diff = await mutation_diff.compute_diff(parent.text, raw.text)
                 score = danger_score.compute_danger_score(diff, downstream_reach)
                 db.add(MutationDiff(edge_id=edge.id, diff_json=diff["diff_json"], danger_score=score["danger_score"], distortion_magnitude=score["distortion_magnitude"], downstream_reach=downstream_reach, llm_model=diff["llm_model"], llm_raw_response=diff["llm_raw_response"], diff_status="complete"))
     if edge:
-        all_edges = list((await db.scalars(select(LineageEdge).where(LineageEdge.cluster_id == cluster.id, LineageEdge.is_flagged_gap.is_(False)))).all())
+        all_edges = list((await db.scalars(select(LineageEdge).where(LineageEdge.cluster_id == cluster.id))).all())
         graph = nx.DiGraph((e.parent_message_id, e.child_message_id) for e in all_edges)
         diffs = list((await db.scalars(select(MutationDiff).join(LineageEdge, MutationDiff.edge_id == LineageEdge.id).where(LineageEdge.cluster_id == cluster.id))).all())
         for stored in diffs:
@@ -70,6 +71,8 @@ async def process_message(msg: NormalizedMessage, db: AsyncSession) -> dict:
             if edge_obj:
                 stored.downstream_reach = len(nx.descendants(graph, edge_obj.child_message_id))
                 stored.danger_score = danger_score.compute_danger_score({"diff_json": stored.diff_json}, stored.downstream_reach)["danger_score"]
+    await db.commit()
+    await refresh_cluster(db, cluster)
     await db.commit()
     await scan_watch_conditions(db)
     return {"message_id": str(raw.id), "cluster_id": str(cluster.id), "new_edges": int(edge is not None), "duplicate": False}

@@ -32,7 +32,7 @@ def compute_r_claim(G: nx.DiGraph, messages: dict, window_hours: float, cluster_
             "metric_type": "r_claim",
             "window_start": window_start,
             "window_end": window_end,
-            "value": round(r_claim_val, 4),
+            "value": round(r_claim_val, 4) if r_claim_val is not None else None,
             "active_node_count": P_t,
             "is_reliable": is_reliable
         })
