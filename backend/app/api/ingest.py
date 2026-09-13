@@ -13,9 +13,10 @@ router = APIRouter(prefix="/api/ingest", tags=["Ingestion"])
 async def ingest_telegram_live(payload: dict, background_tasks: BackgroundTasks, db: AsyncSession = Depends(get_db)):
     """Live endpoint for Telegram Bot API webhooks."""
     # channel_id would be resolved from payload context
-    chat = payload.get("chat") or (payload.get("channel") or {})
+    message = payload.get("message") or payload
+    chat = message.get("chat") or payload.get("chat") or (payload.get("channel") or {})
     resolved_channel_id = str(chat.get("id") or payload.get("channel_id") or "")
-    normalized_msg = process_telegram_message(payload, channel_id=resolved_channel_id)
+    normalized_msg = process_telegram_message(message, channel_id=resolved_channel_id)
     
     # Pass to the pipeline asynchronously to free up the webhook response
     async def run_pipeline():

@@ -1,31 +1,18 @@
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>ClaimTrace</title>
-    <link rel="stylesheet" href="/src/styles.css" />
-  </head>
-  <body>
-    <header>
-      <h1>ClaimTrace</h1>
-      <div id="topology-container" class="topology-badge"></div>
-    </header>
-    
-    <main>
-      <section id="dashboard-panel">
-        <div id="debunk-caveat-banner" class="hidden caveat-banner">
-          ⚠️ Estimated from claim origin, not peak velocity (insufficient data for reliable R_claim)
-        </div>
-        <div id="cluster-stats"></div>
-        <div id="alerts-panel"></div>
-      </section>
-
-      <section id="river-panel">
-        <div id="mutation-river"></div>
-      </section>
-    </main>
-
-    <script type="module" src="/src/main.js"></script>
-  </body>
-</html>
+<!doctype html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8" /><meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>ClaimTrace // Forensic Intelligence</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&family=Newsreader:opsz,wght@6..72,500;6..72,600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/app.css" />
+</head>
+<body>
+  <aside class="sidebar"><div><div class="brand"><span class="mark">✦</span><div><strong>ClaimTrace</strong><small>FORENSIC INTELLIGENCE</small></div></div><div class="eyebrow">FORENSIC DESKS</div><nav>
+    <a href="#overview" data-route="overview">▦ <span>Landing &amp; Overview</span></a><a href="#clusters" data-route="clusters">◉ <span>Clusters Explorer</span></a><a href="#lineage" data-route="lineage">⌘ <span>Mutation River</span></a><a href="#alerts" data-route="alerts">◉ <span>Watchlists &amp; Alerts</span></a>
+  </nav></div><footer><span>INGEST NODE</span><code>PAR-04</code><span>LINEAGE ENGINE</span><code>v2.8.4</code></footer></aside>
+  <div class="workspace"><header><div class="live"><i></i> LIVE INGESTION ACTIVE · TELEGRAM BOT API</div><div class="header-actions"><input id="search" placeholder="Search claim hash, entity, source URL…" /><button id="new-watch">＋ New Watchlist</button></div></header>
+    <main id="app"><div class="loading">Loading forensic desk…</div></main>
+  </div>
+  <script src="/assets/app.js" defer></script>
+</body></html>

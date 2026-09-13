@@ -37,5 +37,16 @@ services:
     # Runs the watchlist periodic scan job independently of the API traffic
     command: python -m app.services.watchlist_worker
 
+  telegram:
+    build:
+      context: ./backend
+    environment:
+      - DATABASE_URL=postgresql+psycopg://claimtrace_user:claimtrace_password@db:5432/claimtrace_db
+    env_file:
+      - ./backend/.env
+    depends_on:
+      - db
+    command: python -m app.services.telegram_worker
+
 volumes:
   pgdata:

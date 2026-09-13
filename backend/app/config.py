@@ -3,7 +3,13 @@ from pydantic_settings import BaseSettings
 class Settings(BaseSettings):
     DATABASE_URL: str
     TELEGRAM_BOT_TOKEN: str
-    ANTHROPIC_API_KEY: str
+    TELEGRAM_MODE: str = "polling"
+    TELEGRAM_ALLOWED_CHANNEL_IDS: str = ""
+    TELEGRAM_POLL_TIMEOUT_SECONDS: int = 30
+    LLM_PROVIDER: str = "groq"
+    GROQ_API_KEY: str | None = None
+    GROQ_MODEL: str = "llama-3.3-70b-versatile"
+    ANTHROPIC_API_KEY: str | None = None
     ANTHROPIC_MODEL: str = "claude-sonnet-4-20250514"
     EMBEDDING_MODEL: str = "paraphrase-multilingual-mpnet-base-v2"
     CLUSTER_SIMILARITY_THRESHOLD: float = 0.75

@@ -1,4 +1,5 @@
 import asyncio
+import sys
 from logging.config import fileConfig
 from sqlalchemy import pool
 from sqlalchemy.ext.asyncio import async_engine_from_config
@@ -8,6 +9,9 @@ from app.config import settings
 from app.database import Base
 # Import all models to ensure Alembic detects them
 from app.models import message, cluster, edge, diff, coordination, watchlist, channel, metric, lineage_gap
+
+if sys.platform == "win32":
+    asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
 
 # This is the Alembic Config object
 config = context.config

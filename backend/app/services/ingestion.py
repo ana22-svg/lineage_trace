@@ -10,7 +10,11 @@ def process_telegram_message(raw_telegram_data: dict, channel_id: str) -> Normal
     Normalizes a live Telegram Bot API message.
     author_account_age_days is structurally unavailable and must be None.
     """
+    if not raw_telegram_data.get("message_id") or not raw_telegram_data.get("date"):
+        raise ValueError("Telegram update is missing message_id or date")
     text = raw_telegram_data.get("text") or raw_telegram_data.get("caption") or ""
+    if not text.strip():
+        raise ValueError("Telegram message has no text or caption")
     language = "unknown"
     if detect and text:
         try: language = detect(text)
