@@ -1,5 +1,6 @@
 import asyncio
 import logging
+import sys
 from telegram import Update
 from telegram.ext import Application, MessageHandler, ContextTypes, filters
 from app.config import settings
@@ -53,4 +54,7 @@ async def run():
         await application.shutdown()
 
 if __name__ == "__main__":
+    # psycopg's async driver requires a selector loop on Windows.
+    if sys.platform == "win32":
+        asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
     asyncio.run(run())

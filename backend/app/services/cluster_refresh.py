@@ -1,4 +1,5 @@
 import networkx as nx
+from datetime import datetime, timezone
 from sqlalchemy import select, delete
 from app.models.message import RawMessage
 from app.models.edge import LineageEdge
@@ -22,7 +23,7 @@ async def refresh_cluster(db, cluster):
     snapshots = compute_r_claim(graph, message_map, 6.0, str(cluster.id))
     await db.execute(delete(MetricSnapshot).where(MetricSnapshot.cluster_id == cluster.id, MetricSnapshot.metric_type == "r_claim"))
     for item in snapshots:
-        db.add(MetricSnapshot(**{k: item[k] for k in ("cluster_id", "metric_type", "window_start", "window_end", "value", "active_node_count", "is_reliable")}))
+        db.add(MetricSnapshot(**{k: item[k] for k in ("cluster_id", "metric_type", "window_start", "window_end", "value", "active_node_count", "is_reliable")}, created_at=datetime.now(timezone.utc)))
     lag = compute_debunk_lag(graph, message_map, snapshots)
     if lag["has_debunk"]:
-        db.add(MetricSnapshot(cluster_id=cluster.id, metric_type="debunk_lag", value=lag["debunk_lag_hours"], is_reliable=True, estimation_method=lag["estimation_method"], metadata_json=lag))
+        db.add(MetricSnapshot(cluster_id=cluster.id, metric_type="debunk_lag", value=lag["debunk_lag_hours"], is_reliable=True, estimation_method=lag["estimation_method"], metadata_json=lag, created_at=datetime.now(timezone.utc)))

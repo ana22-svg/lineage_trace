@@ -12,7 +12,20 @@ async def list_clusters(page: int = 1, page_size: int = 50, db: AsyncSession = D
     """Retrieves all active claim lineages."""
     # return await crud.get_all_clusters(db)
     page_size = min(max(page_size, 1), 100)
-    return await crud.list_clusters(db, (max(page, 1)-1)*page_size, page_size)
+    clusters = await crud.list_clusters(db, (max(page, 1)-1)*page_size, page_size)
+    return [
+        {
+            "id": cluster.id,
+            "member_count": cluster.member_count,
+            "topology": {
+                "internal": cluster.topology_label_internal,
+                "external": cluster.topology_label_external,
+            },
+            "first_seen": cluster.first_seen,
+            "last_seen": cluster.last_seen,
+        }
+        for cluster in clusters
+    ]
 
 @router.get("/{cluster_id}", response_model=ClusterResponse)
 async def get_cluster(cluster_id: str, db: AsyncSession = Depends(get_db)):

@@ -1,4 +1,4 @@
-from datetime import timezone
+from datetime import datetime, timezone
 from uuid import UUID
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -32,11 +32,11 @@ async def process_message(msg: NormalizedMessage, db: AsyncSession) -> dict:
         elif msg.source == "telegram":
             raise ValueError(f"Telegram channel '{msg.channel_id}' is not registered")
     if assignment["is_new"]:
-        cluster = ClaimCluster(centroid=vector, member_count=0, topology_label_internal="unclassified", topology_label_external="unclassified", first_seen=ts, last_seen=ts)
+        cluster = ClaimCluster(centroid=vector, member_count=0, topology_label_internal="unclassified", topology_label_external="unclassified", first_seen=ts, last_seen=ts, created_at=datetime.now(timezone.utc))
         db.add(cluster); await db.flush()
     else:
         cluster = (await db.execute(select(ClaimCluster).where(ClaimCluster.id == assignment["assigned_cluster_id"]).with_for_update())).scalar_one()
-    raw = RawMessage(source=msg.source, source_id=msg.source_id, channel_id=channel_id, author_id=msg.author_id, author_account_age_days=msg.author_account_age_days, text=msg.text, language=msg.language, embedding=vector, timestamp=ts, cluster_id=cluster.id, metadata_json=msg.metadata)
+    raw = RawMessage(source=msg.source, source_id=msg.source_id, channel_id=channel_id, author_id=msg.author_id, author_account_age_days=msg.author_account_age_days, text=msg.text, language=msg.language, embedding=vector, timestamp=ts, cluster_id=cluster.id, metadata_json=msg.metadata, created_at=datetime.now(timezone.utc))
     db.add(raw); await db.flush()
     cluster.member_count += 1; cluster.first_seen = min(cluster.first_seen, ts); cluster.last_seen = max(cluster.last_seen, ts)
     # Running mean keeps the centroid transactionally aligned with membership.

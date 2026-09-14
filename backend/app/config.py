@@ -8,7 +8,7 @@ class Settings(BaseSettings):
     TELEGRAM_POLL_TIMEOUT_SECONDS: int = 30
     LLM_PROVIDER: str = "groq"
     GROQ_API_KEY: str | None = None
-    GROQ_MODEL: str = "llama-3.3-70b-versatile"
+    GROQ_MODEL: str = "openai/gpt-oss-20b"
     ANTHROPIC_API_KEY: str | None = None
     ANTHROPIC_MODEL: str = "claude-sonnet-4-20250514"
     EMBEDDING_MODEL: str = "paraphrase-multilingual-mpnet-base-v2"

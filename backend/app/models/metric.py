@@ -1,5 +1,5 @@
 import uuid
-from sqlalchemy import Column, Float, Integer, Boolean, String, DateTime, ForeignKey
+from sqlalchemy import Column, Float, Integer, Boolean, String, DateTime, ForeignKey, func
 from sqlalchemy.dialects.postgresql import UUID, JSONB, ENUM
 from app.database import Base
 
@@ -19,4 +19,6 @@ class MetricSnapshot(Base):
     is_reliable = Column(Boolean, nullable=False, default=True)
     estimation_method = Column(String, nullable=True) # e.g., 'peak_velocity' or 'fallback_first_seen'
     metadata_json = Column(JSONB, default={})
-    created_at = Column(DateTime(timezone=True), nullable=False)
+    # Metric snapshots are created by background refreshes, so the timestamp
+    # must be populated even when the caller does not provide one.
+    created_at = Column(DateTime(timezone=True), nullable=False, server_default=func.now())
