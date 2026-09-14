@@ -64,6 +64,11 @@ async def scan_watch_conditions(db: AsyncSession):
         if triggered:
             recent = await db.scalar(select(Alert).where(Alert.condition_id == condition.id, Alert.cluster_id == cluster.id).order_by(Alert.created_at.desc()))
             if not recent or recent.detail_json != detail:
-                db.add(Alert(condition_id=condition.id, cluster_id=cluster.id, detail_json=detail))
+                db.add(Alert(
+                    condition_id=condition.id,
+                    cluster_id=cluster.id,
+                    detail_json=detail,
+                    created_at=datetime.now(timezone.utc),
+                ))
                 logger.info("watchlist_alert_created", extra={"condition_id": str(condition.id), "cluster_id": str(cluster.id)})
     await db.commit()
