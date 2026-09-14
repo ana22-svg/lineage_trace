@@ -12,7 +12,7 @@ class Settings(BaseSettings):
     ANTHROPIC_API_KEY: str | None = None
     ANTHROPIC_MODEL: str = "claude-sonnet-4-20250514"
     EMBEDDING_MODEL: str = "paraphrase-multilingual-mpnet-base-v2"
-    CLUSTER_SIMILARITY_THRESHOLD: float = 0.75
+    CLUSTER_SIMILARITY_THRESHOLD: float = 0.55
     EDGE_DECAY_THRESHOLD: float = 0.40
     WATCHLIST_SCAN_INTERVAL_SECONDS: int = 300
     R_CLAIM_WINDOW_HOURS: float = 6.0

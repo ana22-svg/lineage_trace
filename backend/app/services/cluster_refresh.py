@@ -3,6 +3,7 @@ from datetime import datetime, timezone
 from sqlalchemy import select, delete
 from app.models.message import RawMessage
 from app.models.edge import LineageEdge
+from app.models.coordination import CoordinationSignal
 from app.models.metric import MetricSnapshot
 from app.models.cluster import ClaimCluster
 from app.services.r_claim import compute_r_claim
@@ -13,12 +14,15 @@ from types import SimpleNamespace
 async def refresh_cluster(db, cluster):
     messages = list((await db.scalars(select(RawMessage).where(RawMessage.cluster_id == cluster.id))).all())
     edges = list((await db.scalars(select(LineageEdge).where(LineageEdge.cluster_id == cluster.id))).all())
+    edge_ids = [edge.id for edge in edges]
+    signals = list((await db.scalars(select(CoordinationSignal).where(CoordinationSignal.edge_id.in_(edge_ids)))).all()) if edge_ids else []
     graph = nx.DiGraph()
     graph.add_nodes_from((m.id, {"timestamp": m.timestamp, "metadata": m.metadata_json}) for m in messages)
     graph.add_edges_from((e.parent_message_id, e.child_message_id) for e in edges)
     internal = classify_topology_internal(graph)
     cluster.topology_label_internal = internal
-    cluster.topology_label_external = map_to_external_label(internal, 0.0)
+    coordination_density = sum(signal.is_coordinated for signal in signals) / len(signals) if signals else 0.0
+    cluster.topology_label_external = map_to_external_label(internal, coordination_density)
     message_map = {m.id: SimpleNamespace(timestamp=m.timestamp, metadata=m.metadata_json) for m in messages}
     snapshots = compute_r_claim(graph, message_map, 6.0, str(cluster.id))
     await db.execute(delete(MetricSnapshot).where(MetricSnapshot.cluster_id == cluster.id, MetricSnapshot.metric_type == "r_claim"))

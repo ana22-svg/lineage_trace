@@ -9,7 +9,7 @@ class WatchCondition(Base):
     id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     cluster_id = Column(UUID(as_uuid=True), ForeignKey('claim_clusters.id'), nullable=True)
     condition_type = Column(
-        ENUM('r_claim_breach', 'debunk_lag_exceeded', 'topology_shift', 'high_danger_edge', name='watch_condition_enum'),
+        ENUM('r_claim_breach', 'debunk_lag_exceeded', 'topology_shift', 'high_danger_edge', 'coordinated_signal', name='watch_condition_enum'),
         nullable=False
     )
     threshold_value = Column(Float, nullable=True)

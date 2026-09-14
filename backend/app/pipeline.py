@@ -10,7 +10,9 @@ from app.models.edge import LineageEdge
 from app.models.diff import MutationDiff
 from app.models.lineage_gap import LineageGap
 from app.models.channel import MonitoredChannel
-from app.services import embedding, clustering, lineage, mutation_diff, danger_score
+from app.models.coordination import CoordinationSignal
+from app.models.watchlist import WatchCondition
+from app.services import embedding, clustering, lineage, mutation_diff, danger_score, coordination
 from app.config import settings
 from app.services.watchlist import scan_watch_conditions
 from app.services.cluster_refresh import refresh_cluster
@@ -34,6 +36,15 @@ async def process_message(msg: NormalizedMessage, db: AsyncSession) -> dict:
     if assignment["is_new"]:
         cluster = ClaimCluster(centroid=vector, member_count=0, topology_label_internal="unclassified", topology_label_external="unclassified", first_seen=ts, last_seen=ts, created_at=datetime.now(timezone.utc))
         db.add(cluster); await db.flush()
+        # Every new cluster is watched for a topology change so the Alerts
+        # view works without requiring a separate manual setup step.
+        db.add(WatchCondition(
+            cluster_id=cluster.id,
+            condition_type="topology_shift",
+            last_topology_label_external="unclassified",
+            is_active=True,
+            created_at=datetime.now(timezone.utc),
+        ))
     else:
         cluster = (await db.execute(select(ClaimCluster).where(ClaimCluster.id == assignment["assigned_cluster_id"]).with_for_update())).scalar_one()
     raw = RawMessage(source=msg.source, source_id=msg.source_id, channel_id=channel_id, author_id=msg.author_id, author_account_age_days=msg.author_account_age_days, text=msg.text, language=msg.language, embedding=vector, timestamp=ts, cluster_id=cluster.id, metadata_json=msg.metadata, created_at=datetime.now(timezone.utc))
@@ -62,6 +73,16 @@ async def process_message(msg: NormalizedMessage, db: AsyncSession) -> dict:
                 diff = await mutation_diff.compute_diff(parent.text, raw.text)
                 score = danger_score.compute_danger_score(diff, downstream_reach)
                 db.add(MutationDiff(edge_id=edge.id, diff_json=diff["diff_json"], danger_score=score["danger_score"], distortion_magnitude=score["distortion_magnitude"], downstream_reach=downstream_reach, llm_model=diff["llm_model"], llm_raw_response=diff["llm_raw_response"], diff_status="complete"))
+                signals = coordination.compute_signals(raw, parents)
+                db.add(CoordinationSignal(
+                    edge_id=edge.id,
+                    signal_type="combined",
+                    account_age_stats=signals["account_age_stats"],
+                    burst_score=signals["burst_score"],
+                    is_coordinated=signals["is_coordinated"],
+                    detail_json=signals["detail_json"],
+                    created_at=datetime.now(timezone.utc),
+                ))
     if edge:
         all_edges = list((await db.scalars(select(LineageEdge).where(LineageEdge.cluster_id == cluster.id))).all())
         graph = nx.DiGraph((e.parent_message_id, e.child_message_id) for e in all_edges)

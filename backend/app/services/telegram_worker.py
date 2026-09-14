@@ -33,7 +33,14 @@ async def handle_update(update: Update, context: ContextTypes.DEFAULT_TYPE):
     try:
         normalized = process_telegram_message(payload, channel_id)
         async with AsyncSessionLocal() as db:
-            await process_message(normalized, db)
+            result = await process_message(normalized, db)
+        logger.info(
+            "telegram_message_processed message_id=%s cluster_id=%s duplicate=%s new_edges=%s",
+            message.message_id,
+            result.get("cluster_id"),
+            result.get("duplicate"),
+            result.get("new_edges"),
+        )
     except Exception:
         logger.exception("telegram_update_processing_failed", extra={"channel_id": channel_id, "message_id": message.message_id})
 
@@ -54,6 +61,7 @@ async def run():
         await application.shutdown()
 
 if __name__ == "__main__":
+    logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(name)s %(message)s")
     # psycopg's async driver requires a selector loop on Windows.
     if sys.platform == "win32":
         asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
