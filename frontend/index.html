@@ -5,14 +5,14 @@
   <title>ClaimTrace // Forensic Intelligence</title>
   <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&family=Newsreader:opsz,wght@6..72,500;6..72,600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/assets/app.css" />
+  <link rel="stylesheet" href="/assets/app.css?v=5" />
 </head>
 <body>
-  <aside class="sidebar"><div><div class="brand"><span class="mark">✦</span><div><strong>ClaimTrace</strong><small>FORENSIC INTELLIGENCE</small></div></div><div class="eyebrow">FORENSIC DESKS</div><nav>
-    <a href="#overview" data-route="overview">▦ <span>Landing &amp; Overview</span></a><a href="#clusters" data-route="clusters">◉ <span>Clusters Explorer</span></a><a href="#lineage" data-route="lineage">⌘ <span>Mutation River</span></a><a href="#alerts" data-route="alerts">◉ <span>Watchlists &amp; Alerts</span></a>
-  </nav></div><footer><span>INGEST NODE</span><code>PAR-04</code><span>LINEAGE ENGINE</span><code>v2.8.4</code></footer></aside>
-  <div class="workspace"><header><div class="live"><i></i> LIVE INGESTION ACTIVE · TELEGRAM BOT API</div><div class="header-actions"><input id="search" placeholder="Search claim hash, entity, source URL…" /><button id="new-watch">＋ New Watchlist</button></div></header>
+  <aside class="sidebar"><div><div class="brand"><span class="mark">✦</span><div><strong>ClaimTrace</strong></div></div><div class="eyebrow eyebrow-flex" id="toggle-nav-header"><span>FORENSIC DESKS</span><button id="toggle-nav" class="nav-toggle-btn" title="Toggle navigation tabs">▾</button></div><nav>
+    <a href="#overview" data-route="overview"><span class="nav-icon">▦</span><span>Landing &amp; Overview</span></a><a href="#clusters" data-route="clusters"><span class="nav-icon">◎</span><span>Clusters Explorer</span></a><a href="#lineage" data-route="lineage"><span class="nav-icon">⌘</span><span>Mutation River</span></a><a href="#alerts" data-route="alerts"><span class="nav-icon">◎</span><span>Watchlists &amp; Alerts</span></a>
+  </nav></div></aside>
+  <div class="workspace"><header><div class="header-actions"><input id="search" placeholder="Search claim hash, entity, source URL…" /><button id="new-watch">Watchlist</button></div></header>
     <main id="app"><div class="loading">Loading forensic desk…</div></main>
   </div>
-  <script src="/assets/app.js" defer></script>
+  <script src="/assets/app.js?v=5" defer></script>
 </body></html>
