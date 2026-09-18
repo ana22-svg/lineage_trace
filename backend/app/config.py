@@ -1,3 +1,4 @@
+from pydantic import field_validator
 from pydantic_settings import BaseSettings
 
 class Settings(BaseSettings):
@@ -22,6 +23,15 @@ class Settings(BaseSettings):
     ANTHROPIC_TIMEOUT_SECONDS: float = 30.0
     ANTHROPIC_MAX_RETRIES: int = 3
     ANTHROPIC_RETRY_BASE_SECONDS: float = 1.0
+
+    @field_validator("DATABASE_URL")
+    @classmethod
+    def use_psycopg_driver(cls, value: str) -> str:
+        if value.startswith("postgresql://"):
+            return value.replace("postgresql://", "postgresql+psycopg://", 1)
+        if value.startswith("postgres://"):
+            return value.replace("postgres://", "postgresql+psycopg://", 1)
+        return value
 
     class Config:
         env_file = ".env"

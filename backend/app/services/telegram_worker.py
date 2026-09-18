@@ -3,35 +3,58 @@ import logging
 import sys
 from telegram import Update
 from telegram.ext import Application, MessageHandler, ContextTypes, filters
+from sqlalchemy import select
 from app.config import settings
 from app.database import AsyncSessionLocal
+from app.models.channel import MonitoredChannel
 from app.pipeline import process_message
 from app.services.ingestion import process_telegram_message
 
 logger = logging.getLogger(__name__)
 
-def allowed_channel(channel_id: str) -> bool:
+def configured_channel_allowed(identifiers: set[str]) -> bool:
     configured = {x.strip() for x in settings.TELEGRAM_ALLOWED_CHANNEL_IDS.split(",") if x.strip()}
-    return not configured or channel_id in configured
+    return not configured or bool(configured & identifiers)
+
+def channel_identifiers(message) -> set[str]:
+    identifiers = {str(message.chat.id)}
+    username = getattr(message.chat, "username", None)
+    if username:
+        identifiers.add(username)
+        identifiers.add(f"@{username}")
+    return identifiers
+
+async def get_registered_channel(message) -> MonitoredChannel | None:
+    identifiers = channel_identifiers(message)
+    if not configured_channel_allowed(identifiers):
+        logger.warning("telegram_channel_not_allowed_by_env", extra={"channel_identifiers": sorted(identifiers)})
+        return None
+    async with AsyncSessionLocal() as db:
+        return await db.scalar(
+            select(MonitoredChannel).where(
+                MonitoredChannel.is_active.is_(True),
+                MonitoredChannel.platform_channel_id.in_(identifiers),
+            )
+        )
 
 async def handle_update(update: Update, context: ContextTypes.DEFAULT_TYPE):
     message = update.channel_post or update.message
     if message is None or not message.chat:
         return
-    channel_id = str(message.chat.id)
-    if not allowed_channel(channel_id):
-        logger.warning("telegram_channel_not_allowed", extra={"channel_id": channel_id})
+    channel = await get_registered_channel(message)
+    if channel is None:
+        logger.warning("telegram_channel_not_registered_or_inactive", extra={"channel_identifiers": sorted(channel_identifiers(message))})
         return
     payload = {
         "message_id": message.message_id,
         "date": int(message.date.timestamp()),
-        "chat": {"id": message.chat.id},
+        "chat": {"id": message.chat.id, "username": getattr(message.chat, "username", None), "title": getattr(message.chat, "title", None)},
         "from": {"id": message.from_user.id} if message.from_user else {},
         "text": message.text,
         "caption": message.caption,
     }
     try:
-        normalized = process_telegram_message(payload, channel_id)
+        normalized = process_telegram_message(payload, channel.platform_channel_id)
         async with AsyncSessionLocal() as db:
             result = await process_message(normalized, db)
         logger.info(
@@ -42,7 +65,7 @@ async def handle_update(update: Update, context: ContextTypes.DEFAULT_TYPE):
             result.get("new_edges"),
         )
     except Exception:
-        logger.exception("telegram_update_processing_failed", extra={"channel_id": channel_id, "message_id": message.message_id})
+        logger.exception("telegram_update_processing_failed", extra={"channel_id": channel.platform_channel_id, "message_id": message.message_id})
 
 async def run():
     if not settings.TELEGRAM_BOT_TOKEN:

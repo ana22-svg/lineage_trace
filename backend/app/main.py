@@ -12,11 +12,27 @@ import logging
 from app.api import channels, ingest, lineage, watchlists, clusters, diffs, metrics, topology
 from app.database import check_database
 from app.api.auth import require_api_key
+from app.config import settings
 
 app = FastAPI(title="Lineage Trace API", version="2.0")
 logger = logging.getLogger(__name__)
 
 FRONTEND_DIR = Path(__file__).resolve().parents[2] / "frontend"
+telegram_task: asyncio.Task | None = None
+
+@app.on_event("startup")
+async def start_telegram_polling():
+    global telegram_task
+    if settings.TELEGRAM_MODE.lower() != "polling":
+        return
+    from app.services.telegram_worker import run as run_telegram_worker
+    telegram_task = asyncio.create_task(run_telegram_worker())
+    logger.info("telegram_worker_task_started")
+
+@app.on_event("shutdown")
+async def stop_telegram_polling():
+    if telegram_task:
+        telegram_task.cancel()
 
 @app.exception_handler(Exception)
 async def unhandled_error(request: Request, exc: Exception):
