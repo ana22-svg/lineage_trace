@@ -1,8 +1,8 @@
-\# ClaimTrace
+\# Lineage Trace
 
 
 
-ClaimTrace reconstructs how a claim mutates as it spreads across platforms, distinguishing organic propagation from coordinated amplification. It serves institutional buyers (newsroom standards desks, political monitoring teams, brand reputation teams) who need to know how a claim moved and warped, not just whether it is true\[cite: 3].
+Lineage Trace reconstructs how a claim mutates as it spreads across platforms, distinguishing organic propagation from coordinated amplification. It serves institutional buyers (newsroom standards desks, political monitoring teams, brand reputation teams) who need to know how a claim moved and warped, not just whether it is true\[cite: 3].
 
 
 

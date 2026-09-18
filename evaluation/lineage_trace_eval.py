@@ -8,7 +8,7 @@ from backend.app.database import SessionLocal
 
 async def evaluate_case(case_name: str, case_path: Path):
     """
-    Runs the full ClaimTrace pipeline per case and compares it against the baseline LLM.
+    Runs the full Lineage Trace pipeline per case and compares it against the baseline LLM.
     """
     print(f"--- Evaluating {case_name} ---")
     
@@ -22,8 +22,8 @@ async def evaluate_case(case_name: str, case_path: Path):
     baseline_result = run_baseline_verdict(earliest_claim["text"])
     print(baseline_result)
     
-    # 2. Run ClaimTrace Pipeline
-    print("\n[ClaimTrace Pipeline Execution]")
+    # 2. Run Lineage Trace Pipeline
+    print("\n[Lineage Trace Pipeline Execution]")
     async with SessionLocal() as db:
         cluster_id = None
         for msg_dict in messages_data:

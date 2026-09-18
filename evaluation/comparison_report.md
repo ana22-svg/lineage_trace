@@ -1,4 +1,4 @@
-\# ClaimTrace Evaluation vs. Baseline LLM
+\# Lineage Trace Evaluation vs. Baseline LLM
 
 
 
@@ -28,7 +28,7 @@ The 3–5 retrospective cases evaluated below were not randomly sampled. Cases w
 
 
 
-\### 2. ClaimTrace Pipeline Output
+\### 2. Lineage Trace Pipeline Output
 
 \*   \*\*Specific Mutation Point:\*\* \[Describe the exact node/edge where the claim distortion occurred, e.g., "At hop 4, the qualifier 'allegedly' was stripped by Account X."]
 
@@ -48,7 +48,7 @@ The 3–5 retrospective cases evaluated below were not randomly sampled. Cases w
 
 \### 3. Conclusion
 
-\[Write a 2-3 sentence summary of what ClaimTrace's lineage graph revealed that the standard consumer verdict baseline missed entirely.]
+\[Write a 2-3 sentence summary of what Lineage Trace's lineage graph revealed that the standard consumer verdict baseline missed entirely.]
 
 
 

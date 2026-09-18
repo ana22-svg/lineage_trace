@@ -1,4 +1,4 @@
-"""Initial ClaimTrace schema."""
+"""Initial Lineage Trace schema."""
 from alembic import op
 from app.database import Base
 from app.models import message, cluster, edge, diff, coordination, watchlist, channel, metric

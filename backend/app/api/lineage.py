@@ -50,7 +50,7 @@ async def get_cluster_lineage(cluster_id: str, db: AsyncSession = Depends(get_db
         },
         "node_count": len(nodes),
         "edge_count": len(edges),
-        "nodes": [{"id": str(n.id), "text": n.text, "timestamp": n.timestamp, "language": n.language} for n in nodes],
+        "nodes": [{"id": str(n.id), "text": n.text, "timestamp": n.timestamp, "language": n.language, "source": n.source, "source_id": n.source_id, "author_id": n.author_id, "channel_id": str(n.channel_id) if n.channel_id else None, "metadata_json": n.metadata_json or {}} for n in nodes],
         "edges": [{"id": str(e.id), "parent_message_id": str(e.parent_message_id), "child_message_id": str(e.child_message_id), "similarity": e.similarity_score, "decay": e.similarity_decay} for e in edges],
         "r_claim_series": [],
         "debunk_lag": {

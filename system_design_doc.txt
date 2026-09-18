@@ -15,7 +15,7 @@ Topology classification (hub-and-spoke / mesh / burst, via networkx)
 R_claim velocity metric + debunk-lag tracking
 Watchlists & alerting (prospective monitoring — periodic re-scan, threshold-based)
 Mutation river visualization (timeline-based, D3.js)
-Evaluation write-up: baseline LLM verdict vs. ClaimTrace on 3–5 real cases
+Evaluation write-up: baseline LLM verdict vs. Lineage Trace on 3–5 real cases
 
 RULES
 

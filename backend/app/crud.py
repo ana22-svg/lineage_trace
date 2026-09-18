@@ -2,7 +2,7 @@ from datetime import datetime, timezone
 from typing import Optional
 from uuid import UUID
 
-from sqlalchemy import select, update
+from sqlalchemy import func, select, update
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.models.channel import MonitoredChannel
@@ -21,7 +21,24 @@ async def create_channel(db, platform_channel_id, display_name, added_by=None):
     db.add(obj); await db.commit(); await db.refresh(obj); return obj
 
 async def list_channels(db):
-    return list((await db.scalars(select(MonitoredChannel).order_by(MonitoredChannel.display_name))).all())
+    result = await db.execute(
+        select(MonitoredChannel, func.max(RawMessage.timestamp).label("last_ingested_at"))
+        .outerjoin(RawMessage, RawMessage.channel_id == MonitoredChannel.id)
+        .group_by(MonitoredChannel.id)
+        .order_by(MonitoredChannel.display_name)
+    )
+    return [
+        {
+            "id": channel.id,
+            "platform_channel_id": channel.platform_channel_id,
+            "display_name": channel.display_name,
+            "is_active": channel.is_active,
+            "added_by": channel.added_by,
+            "created_at": channel.created_at,
+            "last_ingested_at": last_ingested_at,
+        }
+        for channel, last_ingested_at in result.all()
+    ]
 
 async def set_channel_active(db, channel_id, active):
     obj = await db.get(MonitoredChannel, channel_id)

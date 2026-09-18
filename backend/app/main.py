@@ -13,7 +13,7 @@ from app.api import channels, ingest, lineage, watchlists, clusters, diffs, metr
 from app.database import check_database
 from app.api.auth import require_api_key
 
-app = FastAPI(title="ClaimTrace API", version="2.0")
+app = FastAPI(title="Lineage Trace API", version="2.0")
 logger = logging.getLogger(__name__)
 
 FRONTEND_DIR = Path(__file__).resolve().parents[2] / "frontend"
