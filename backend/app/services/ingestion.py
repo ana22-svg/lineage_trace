@@ -21,7 +21,7 @@ def process_telegram_message(raw_telegram_data: dict, channel_id: str) -> Normal
         except Exception: pass
     return NormalizedMessage(
         source="telegram",
-        source_id=str(raw_telegram_data.get("message_id")),
+        source_id=f"{channel_id}:{raw_telegram_data.get('message_id')}",
         channel_id=channel_id,
         author_id=str(raw_telegram_data.get("from", {}).get("id")),
         author_account_age_days=None, # Guarded: API does not provide this
