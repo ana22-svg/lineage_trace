@@ -9,6 +9,7 @@ branch_labels = None
 depends_on = None
 
 def upgrade():
+    op.execute("CREATE EXTENSION IF NOT EXISTS vector")
     Base.metadata.create_all(bind=op.get_bind())
 
 def downgrade():
