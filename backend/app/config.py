@@ -12,7 +12,7 @@ class Settings(BaseSettings):
     GROQ_MODEL: str = "openai/gpt-oss-20b"
     ANTHROPIC_API_KEY: str | None = None
     ANTHROPIC_MODEL: str = "claude-sonnet-4-20250514"
-    EMBEDDING_MODEL: str = "paraphrase-multilingual-mpnet-base-v2"
+    EMBEDDING_MODEL: str = "paraphrase-multilingual-MiniLM-L12-v2"
     CLUSTER_SIMILARITY_THRESHOLD: float = 0.55
     EDGE_DECAY_THRESHOLD: float = 0.40
     WATCHLIST_SCAN_INTERVAL_SECONDS: int = 300
