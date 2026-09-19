@@ -17,7 +17,7 @@ COPY backend/requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
 # Pre-download and cache embedding model during build so no RAM spikes occur at runtime
-RUN python -c "from fastembed import TextEmbedding; list(TextEmbedding(model_name='sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2').embed(['init']))"
+RUN python -c "from fastembed import TextEmbedding; list(TextEmbedding(model_name='BAAI/bge-small-en-v1.5').embed(['init']))"
 
 COPY backend/ .
 COPY frontend/ /app/frontend/

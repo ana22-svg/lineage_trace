@@ -13,7 +13,8 @@ class EmbeddingService:
     def _model(self):
         if self._embedding_model is None:
             from fastembed import TextEmbedding
-            model_name = (settings.EMBEDDING_MODEL or "").strip() or "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2"
+           # Line 16 in backend/app/services/embedding.py:
+            model_name = (settings.EMBEDDING_MODEL or "").strip() or "BAAI/bge-small-en-v1.5"
             if "/" not in model_name:
                 model_name = f"sentence-transformers/{model_name}"
             self._embedding_model = TextEmbedding(model_name=model_name)
