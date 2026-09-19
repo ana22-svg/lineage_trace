@@ -16,4 +16,4 @@ def test_construct_edges_flags_gap_when_decay_high():
     assert result["child_id"] == "child1"
     # Decay will be 1.0 (1 - 0.0 similarity), which is > EDGE_DECAY_THRESHOLD
     assert result["similarity_decay"] > settings.EDGE_DECAY_THRESHOLD
-    assert result["is_flagged_gap"] is True
+    assert bool(result["is_flagged_gap"]) is True

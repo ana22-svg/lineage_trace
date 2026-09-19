@@ -23,6 +23,8 @@ async def process_message(msg: NormalizedMessage, db: AsyncSession) -> dict:
     if existing:
         return {"message_id": str(existing.id), "cluster_id": str(existing.cluster_id), "new_edges": 0, "duplicate": True}
     vector = embedding.embedding_service.embed(msg.text).tolist()
+    if len(vector) != 768:
+        raise ValueError(f"Embedding dimension error: expected 768 dimensions, got {len(vector)}")
     clusters = list((await db.scalars(select(ClaimCluster))).all())
     assignment = clustering.assign_to_cluster(vector, clusters)
     ts = msg.timestamp if msg.timestamp.tzinfo else msg.timestamp.replace(tzinfo=timezone.utc)
