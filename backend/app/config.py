@@ -24,6 +24,13 @@ class Settings(BaseSettings):
     ANTHROPIC_MAX_RETRIES: int = 3
     ANTHROPIC_RETRY_BASE_SECONDS: float = 1.0
 
+    @field_validator("EMBEDDING_MODEL", mode="before")
+    @classmethod
+    def default_embedding_model(cls, value: str | None) -> str:
+        if not value or not str(value).strip():
+            return "paraphrase-multilingual-MiniLM-L12-v2"
+        return str(value).strip()
+
     @field_validator("DATABASE_URL")
     @classmethod
     def use_psycopg_driver(cls, value: str) -> str:

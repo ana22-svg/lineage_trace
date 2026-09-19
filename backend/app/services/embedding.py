@@ -15,7 +15,8 @@ class EmbeddingService:
         if self.model is None:
             torch.set_num_threads(1)
             from sentence_transformers import SentenceTransformer
-            self.model = SentenceTransformer(settings.EMBEDDING_MODEL)
+            model_name = (settings.EMBEDDING_MODEL or "").strip() or "paraphrase-multilingual-MiniLM-L12-v2"
+            self.model = SentenceTransformer(model_name)
             self.model.eval()
         return self.model
 
