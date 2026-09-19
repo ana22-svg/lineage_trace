@@ -76,7 +76,7 @@ async def run():
     application.add_handler(MessageHandler(filters.ALL, handle_update))
     await application.initialize()
     await application.start()
-    await application.updater.start_polling(timeout=settings.TELEGRAM_POLL_TIMEOUT_SECONDS, drop_pending_updates=False, allowed_updates=["message", "channel_post"])
+    await application.updater.start_polling(timeout=settings.TELEGRAM_POLL_TIMEOUT_SECONDS, drop_pending_updates=True, allowed_updates=["message", "channel_post"])
     logger.info("telegram_polling_started")
     try:
         await asyncio.Event().wait()
