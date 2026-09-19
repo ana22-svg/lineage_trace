@@ -9,19 +9,21 @@ from app.database import AsyncSessionLocal
 from app.models.channel import MonitoredChannel
 from app.pipeline import process_message
 from app.services.ingestion import process_telegram_message
+from app.services.telegram_channels import channel_identifier_variants
 
 logger = logging.getLogger(__name__)
 
 def configured_channel_allowed(identifiers: set[str]) -> bool:
-    configured = {x.strip() for x in settings.TELEGRAM_ALLOWED_CHANNEL_IDS.split(",") if x.strip()}
+    configured = set()
+    for item in settings.TELEGRAM_ALLOWED_CHANNEL_IDS.split(","):
+        configured.update(channel_identifier_variants(item))
     return not configured or bool(configured & identifiers)
 
 def channel_identifiers(message) -> set[str]:
-    identifiers = {str(message.chat.id)}
+    identifiers = channel_identifier_variants(str(message.chat.id))
     username = getattr(message.chat, "username", None)
     if username:
-        identifiers.add(username)
-        identifiers.add(f"@{username}")
+        identifiers.update(channel_identifier_variants(username))
     return identifiers
 
 async def get_registered_channel(message) -> MonitoredChannel | None:

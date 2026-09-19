@@ -699,9 +699,9 @@ async function openRegisterChannelModal() {
             </div>
 
             <div class="form-group">
-              <label for="chan-platform-id">Platform Channel ID / Handle</label>
-              <input type="text" id="chan-platform-id" name="platform_channel_id" required placeholder="e.g. @disinfo_monitor_bot or -100192847291" />
-              <div class="form-help">Unique platform channel or Telegram group ID.</div>
+              <label for="chan-platform-id">Telegram Channel Handle or ID</label>
+              <input type="text" id="chan-platform-id" name="platform_channel_id" required placeholder="e.g. lineagetry, @lineagetry, or -100192847291" />
+              <div class="form-help">Use the public channel username/handle. Numeric IDs also work after the bot receives a channel post.</div>
             </div>
           </div>
           <div class="modal-footer">
