@@ -56,7 +56,10 @@ async def process_message(msg: NormalizedMessage, db: AsyncSession) -> dict:
     old_count = cluster.member_count - 1
     if len(cluster.centroid) != len(vector):
         raise ValueError("Embedding dimension does not match cluster centroid")
-    cluster.centroid = [((cluster.centroid[i] * old_count) + vector[i]) / cluster.member_count for i in range(len(vector))]
+    # Compute running mean and re-normalize centroid to unit vector:
+    new_centroid = np.array([((cluster.centroid[i] * old_count) + vector[i]) / cluster.member_count for i in range(len(vector))], dtype=np.float32)
+    norm = np.linalg.norm(new_centroid)
+    cluster.centroid = (new_centroid / norm if norm > 0 else new_centroid).tolist()
     parents = list((await db.scalars(select(RawMessage).where(RawMessage.cluster_id == cluster.id, RawMessage.timestamp < ts))).all())
     edge = None
     if parents:
