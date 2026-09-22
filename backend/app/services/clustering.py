@@ -11,7 +11,9 @@ def assign_to_cluster(new_embedding: np.ndarray, existing_clusters: list) -> dic
 
     for cluster in existing_clusters:
         # Compute cosine similarity
-        sim = np.dot(new_embedding, cluster.centroid) 
+        centroid_arr = np.array(cluster.centroid, dtype=np.float32)
+        norm_c = np.linalg.norm(centroid_arr)
+        sim = float(np.dot(new_embedding, centroid_arr) / (norm_c if norm_c > 0 else 1.0))
         if sim > highest_sim:
             highest_sim = sim
             best_cluster_id = cluster.id
