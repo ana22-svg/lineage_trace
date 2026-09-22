@@ -13,8 +13,8 @@ class Settings(BaseSettings):
     ANTHROPIC_API_KEY: str | None = None
     ANTHROPIC_MODEL: str = "claude-sonnet-4-20250514"
     EMBEDDING_MODEL: str = "paraphrase-multilingual-MiniLM-L12-v2"
-    CLUSTER_SIMILARITY_THRESHOLD: float = 0.78
-    EDGE_DECAY_THRESHOLD: float = 0.40
+    CLUSTER_SIMILARITY_THRESHOLD: float = 0.75
+    EDGE_DECAY_THRESHOLD: float = 0.35
     WATCHLIST_SCAN_INTERVAL_SECONDS: int = 300
     R_CLAIM_WINDOW_HOURS: float = 6.0
     MIN_ACTIVE_NODES_FOR_R_CLAIM: int = 5
