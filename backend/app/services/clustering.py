@@ -1,3 +1,7 @@
+import numpy as np
+from app.config import settings
+
+
 def assign_to_cluster(new_embedding: np.ndarray, existing_clusters: list) -> dict:
     best_cluster_id = None
     highest_sim = -1.0
