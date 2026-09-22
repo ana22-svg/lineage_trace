@@ -25,16 +25,15 @@ class EmbeddingService:
         vector = np.asarray(vector, dtype=np.float32)
         current = vector.shape[-1]
 
+        if current == TARGET_EMBEDDING_DIMENSIONS:
+            return vector
+
         if current > TARGET_EMBEDDING_DIMENSIONS:
-            vector = vector[:TARGET_EMBEDDING_DIMENSIONS]
-        elif current < TARGET_EMBEDDING_DIMENSIONS:
-            vector = np.pad(vector, (0, TARGET_EMBEDDING_DIMENSIONS - current))
+            fitted = vector[:TARGET_EMBEDDING_DIMENSIONS]
+            norm = np.linalg.norm(fitted)
+            return fitted / norm if norm else fitted
 
-        norm = np.linalg.norm(vector)
-        if norm > 0:
-            vector = vector / norm
-
-        return vector
+        return np.pad(vector, (0, TARGET_EMBEDDING_DIMENSIONS - current))
 
     def embed(self, text: str) -> np.ndarray:
         model = self._model()
