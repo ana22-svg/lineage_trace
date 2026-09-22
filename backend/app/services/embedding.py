@@ -19,21 +19,23 @@ class EmbeddingService:
                 self._embedding_model = ("st", SentenceTransformer(model_name))
         return self._embedding_model
 
+   # Replace or ensure _fit_vector_dimension normalizes first:
     def _fit_vector_dimension(self, vector: np.ndarray) -> np.ndarray:
         vector = np.asarray(vector, dtype=np.float32)
-
-        # 1. Force L2 normalization so vector norm is exactly 1.0
+        # 1. Always L2-normalize the raw model output first
         norm = np.linalg.norm(vector)
         if norm > 0:
             vector = vector / norm
-
+        
         current = vector.shape[-1]
         if current == TARGET_EMBEDDING_DIMENSIONS:
             return vector
         if current > TARGET_EMBEDDING_DIMENSIONS:
             fitted = vector[:TARGET_EMBEDDING_DIMENSIONS]
-            fnorm = np.linalg.norm(fitted)
-            return fitted / fnorm if fnorm > 0 else fitted
+            f_norm = np.linalg.norm(fitted)
+            return fitted / f_norm if f_norm else fitted
+        
+# 2. Pad normalized vector with zeros to 768 dimensions
         return np.pad(vector, (0, TARGET_EMBEDDING_DIMENSIONS - current))
     def embed(self, text: str) -> np.ndarray:
         kind, model = self._model()
