@@ -6,19 +6,17 @@ TARGET_EMBEDDING_DIMENSIONS = 768
 
 class EmbeddingService:
     def __init__(self):
-        # Load the ONNX model only when ingestion actually needs it.
-        # This keeps API startup and read-only dashboard routes lightweight.
         self._embedding_model = None
-
     def _model(self):
         if self._embedding_model is None:
-            from fastembed import TextEmbedding
-
-            model_name = (settings.EMBEDDING_MODEL or "").strip() or "BAAI/bge-small-en-v1.5"
-            if "/" not in model_name:
-                model_name = f"sentence-transformers/{model_name}"
-            self._embedding_model = TextEmbedding(model_name=model_name)
-
+            try:
+                from fastembed import TextEmbedding
+                model_name = (settings.EMBEDDING_MODEL or "").strip() or "BAAI/bge-small-en-v1.5"
+                self._embedding_model = ("fastembed", TextEmbedding(model_name=model_name))
+            except ImportError:
+                from sentence_transformers import SentenceTransformer
+                model_name = (settings.EMBEDDING_MODEL or "").strip() or "paraphrase-multilingual-MiniLM-L12-v2"
+                self._embedding_model = ("st", SentenceTransformer(model_name))
         return self._embedding_model
 
     def _fit_vector_dimension(self, vector: np.ndarray) -> np.ndarray:
@@ -36,8 +34,15 @@ class EmbeddingService:
         return np.pad(vector, (0, TARGET_EMBEDDING_DIMENSIONS - current))
 
     def embed(self, text: str) -> np.ndarray:
-        model = self._model()
-        vector = next(model.embed([text]))
+        kind, model = self._model()
+        if kind == "fastembed":
+            # FastEmbed returns a generator of numpy arrays
+            vector = list(model.embed([text]))[0]
+            # Normalize vector to unit length
+            norm = np.linalg.norm(vector)
+            vector = vector / norm if norm else vector
+        else:
+            vector = model.encode(text, normalize_embeddings=True)
         return self._fit_vector_dimension(vector)
 
     def embed_batch(self, texts: list[str]) -> np.ndarray:
