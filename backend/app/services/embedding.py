@@ -7,28 +7,26 @@ TARGET_EMBEDDING_DIMENSIONS = 768
 class EmbeddingService:
     def __init__(self):
         self._embedding_model = None
-
     def _model(self):
         if self._embedding_model is None:
             try:
                 from fastembed import TextEmbedding
                 model_name = (settings.EMBEDDING_MODEL or "").strip() or "BAAI/bge-small-en-v1.5"
-                if "/" not in model_name and not model_name.startswith("BAAI/"):
-                    model_name = f"BAAI/{model_name}"
                 self._embedding_model = ("fastembed", TextEmbedding(model_name=model_name))
-            except Exception:
+            except ImportError:
                 from sentence_transformers import SentenceTransformer
                 model_name = (settings.EMBEDDING_MODEL or "").strip() or "paraphrase-multilingual-MiniLM-L12-v2"
                 self._embedding_model = ("st", SentenceTransformer(model_name))
         return self._embedding_model
 
+   # Replace or ensure _fit_vector_dimension normalizes first:
     def _fit_vector_dimension(self, vector: np.ndarray) -> np.ndarray:
         vector = np.asarray(vector, dtype=np.float32)
         # 1. Always L2-normalize the raw model output first
         norm = np.linalg.norm(vector)
         if norm > 0:
             vector = vector / norm
-
+        
         current = vector.shape[-1]
         if current == TARGET_EMBEDDING_DIMENSIONS:
             return vector
@@ -36,14 +34,15 @@ class EmbeddingService:
             fitted = vector[:TARGET_EMBEDDING_DIMENSIONS]
             f_norm = np.linalg.norm(fitted)
             return fitted / f_norm if f_norm else fitted
-
-        # 2. Pad normalized vector with zeros to 768 dimensions
+        
+# 2. Pad normalized vector with zeros to 768 dimensions
         return np.pad(vector, (0, TARGET_EMBEDDING_DIMENSIONS - current))
-
     def embed(self, text: str) -> np.ndarray:
         kind, model = self._model()
         if kind == "fastembed":
+            # FastEmbed returns a generator of numpy arrays
             vector = list(model.embed([text]))[0]
+            # Normalize vector to unit length
             norm = np.linalg.norm(vector)
             vector = vector / norm if norm else vector
         else:
@@ -54,12 +53,8 @@ class EmbeddingService:
         if not texts:
             return np.empty((0, TARGET_EMBEDDING_DIMENSIONS), dtype=np.float32)
 
-        kind, model = self._model()
-        if kind == "fastembed":
-            vectors = list(model.embed(texts))
-        else:
-            vectors = model.encode(texts, normalize_embeddings=True)
-
+        model = self._model()
+        vectors = list(model.embed(texts))
         return np.vstack([self._fit_vector_dimension(vector) for vector in vectors])
 
 
