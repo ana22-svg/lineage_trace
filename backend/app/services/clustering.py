@@ -1,13 +1,20 @@
+import numpy as np
+from app.config import settings
+
 def assign_to_cluster(new_embedding: np.ndarray, existing_clusters: list) -> dict:
+    """
+    Compares a new message embedding against existing cluster centroids.
+    Returns the best match if above threshold, or signals to create a new cluster.
+    """
     best_cluster_id = None
     highest_sim = -1.0
 
-    v_vec = np.array(new_embedding, dtype=np.float32)
-    norm_v = np.linalg.norm(v_vec)
-
     for cluster in existing_clusters:
         c_vec = np.array(cluster.centroid, dtype=np.float32)
+        v_vec = np.array(new_embedding, dtype=np.float32)
+
         norm_c = np.linalg.norm(c_vec)
+        norm_v = np.linalg.norm(v_vec)
 
         if norm_c > 0 and norm_v > 0:
             sim = float(np.dot(v_vec, c_vec) / (norm_c * norm_v))
