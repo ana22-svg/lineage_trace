@@ -25,11 +25,7 @@ async def process_message(msg: NormalizedMessage, db: AsyncSession) -> dict:
     vector = embedding.embedding_service.embed(msg.text).tolist()
     if len(vector) != 768:
         raise ValueError(f"Embedding dimension error: expected 768 dimensions, got {len(vector)}")
-    from datetime import timedelta
-    window_cutoff = ts - timedelta(hours=2)  # Only match clusters active in last 2 hrs
-    clusters = list((await db.scalars(
-        select(ClaimCluster).where(ClaimCluster.last_seen >= window_cutoff)
-    )).all())
+    clusters = list((await db.scalars(select(ClaimCluster))).all())
     assignment = clustering.assign_to_cluster(vector, clusters)
     ts = msg.timestamp if msg.timestamp.tzinfo else msg.timestamp.replace(tzinfo=timezone.utc)
     channel_id = None
