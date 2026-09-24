@@ -52,14 +52,14 @@ async def process_message(msg: NormalizedMessage, db: AsyncSession) -> dict:
     raw = RawMessage(source=msg.source, source_id=msg.source_id, channel_id=channel_id, author_id=msg.author_id, author_account_age_days=msg.author_account_age_days, text=msg.text, language=msg.language, embedding=vector, timestamp=ts, cluster_id=cluster.id, metadata_json=msg.metadata, created_at=datetime.now(timezone.utc))
     db.add(raw); await db.flush()
     cluster.member_count += 1; cluster.first_seen = min(cluster.first_seen, ts); cluster.last_seen = max(cluster.last_seen, ts)
-       # Running mean keeps the centroid transactionally aligned with membership.
+    # Running mean keeps the centroid transactionally aligned with membership.
     old_count = cluster.member_count - 1
     if len(cluster.centroid) != len(vector):
         raise ValueError("Embedding dimension does not match cluster centroid")
-    
+    # Compute running mean and re-normalize centroid to unit vector:
     new_centroid = np.array([((cluster.centroid[i] * old_count) + vector[i]) / cluster.member_count for i in range(len(vector))], dtype=np.float32)
-    c_norm = np.linalg.norm(new_centroid)
-    cluster.centroid = (new_centroid / c_norm if c_norm > 0 else new_centroid).tolist()
+    norm = np.linalg.norm(new_centroid)
+    cluster.centroid = (new_centroid / norm if norm > 0 else new_centroid).tolist()
     parents = list((await db.scalars(select(RawMessage).where(RawMessage.cluster_id == cluster.id, RawMessage.timestamp < ts))).all())
     edge = None
     if parents:
