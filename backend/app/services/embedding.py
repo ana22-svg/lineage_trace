@@ -13,29 +13,30 @@ class EmbeddingService:
     def _model(self):
         if self._embedding_model is None:
             from fastembed import TextEmbedding
-
+           # Line 16 in backend/app/services/embedding.py:
             model_name = (settings.EMBEDDING_MODEL or "").strip() or "BAAI/bge-small-en-v1.5"
             if "/" not in model_name:
                 model_name = f"sentence-transformers/{model_name}"
             self._embedding_model = TextEmbedding(model_name=model_name)
-
         return self._embedding_model
 
     def _fit_vector_dimension(self, vector: np.ndarray) -> np.ndarray:
-        vector = np.asarray(vector, dtype=np.float32)
-        current = vector.shape[-1]
+    vector = np.asarray(vector, dtype=np.float32)
+    current = vector.shape[-1]
 
-        if current > TARGET_EMBEDDING_DIMENSIONS:
-            vector = vector[:TARGET_EMBEDDING_DIMENSIONS]
-        elif current < TARGET_EMBEDDING_DIMENSIONS:
-            vector = np.pad(vector, (0, TARGET_EMBEDDING_DIMENSIONS - current))
+    if current > TARGET_EMBEDDING_DIMENSIONS:
+        vector = vector[:TARGET_EMBEDDING_DIMENSIONS]
+    elif current < TARGET_EMBEDDING_DIMENSIONS:
+        vector = np.pad(
+            vector,
+            (0, TARGET_EMBEDDING_DIMENSIONS - current)
+        )
 
-        norm = np.linalg.norm(vector)
-        if norm > 0:
-            vector = vector / norm
+    norm = np.linalg.norm(vector)
+    if norm > 0:
+        vector = vector / norm
 
-        return vector
-
+    return vector
     def embed(self, text: str) -> np.ndarray:
         model = self._model()
         vector = next(model.embed([text]))
@@ -44,10 +45,9 @@ class EmbeddingService:
     def embed_batch(self, texts: list[str]) -> np.ndarray:
         if not texts:
             return np.empty((0, TARGET_EMBEDDING_DIMENSIONS), dtype=np.float32)
-
         model = self._model()
         vectors = list(model.embed(texts))
         return np.vstack([self._fit_vector_dimension(vector) for vector in vectors])
 
-
 embedding_service = EmbeddingService()
+
