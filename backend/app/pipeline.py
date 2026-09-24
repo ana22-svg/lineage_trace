@@ -32,7 +32,7 @@ async def process_message(msg: NormalizedMessage, db: AsyncSession) -> dict:
     ts = msg.timestamp if msg.timestamp.tzinfo else msg.timestamp.replace(tzinfo=timezone.utc)
     
     # Only match against clusters active in the last 2 hours (Temporal Window)
-    window_cutoff = ts - timedelta(minutes=15)
+    window_cutoff = ts - timedelta(hours=2)
     clusters = list((await db.scalars(
         select(ClaimCluster).where(ClaimCluster.last_seen >= window_cutoff)
     )).all())
