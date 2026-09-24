@@ -1,9 +1,8 @@
-from datetime import datetime, timezone, timedelta
+from datetime import datetime, timezone
 from uuid import UUID
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 import networkx as nx
-import numpy as np
 from app.schemas.message import NormalizedMessage
 from app.models.message import RawMessage
 from app.models.cluster import ClaimCluster
@@ -23,22 +22,16 @@ async def process_message(msg: NormalizedMessage, db: AsyncSession) -> dict:
     existing = await db.scalar(select(RawMessage).where(RawMessage.source == msg.source, RawMessage.source_id == msg.source_id))
     if existing:
         return {"message_id": str(existing.id), "cluster_id": str(existing.cluster_id), "new_edges": 0, "duplicate": True}
-        
     vector = embedding.embedding_service.embed(msg.text).tolist()
     if len(vector) != 768:
         raise ValueError(f"Embedding dimension error: expected 768 dimensions, got {len(vector)}")
-
-    # Standardize timestamp first so window_cutoff can use it safely
-    ts = msg.timestamp if msg.timestamp.tzinfo else msg.timestamp.replace(tzinfo=timezone.utc)
-    
-    # Only match against clusters active in the last 2 hours (Temporal Window)
-    window_cutoff = ts - timedelta(hours=2)
+    from datetime import timedelta
+    window_cutoff = ts - timedelta(hours=2)  # Only match clusters active in last 2 hrs
     clusters = list((await db.scalars(
         select(ClaimCluster).where(ClaimCluster.last_seen >= window_cutoff)
     )).all())
-
     assignment = clustering.assign_to_cluster(vector, clusters)
-
+    ts = msg.timestamp if msg.timestamp.tzinfo else msg.timestamp.replace(tzinfo=timezone.utc)
     channel_id = None
     if msg.channel_id:
         channel = await db.scalar(select(MonitoredChannel).where(MonitoredChannel.platform_channel_id == msg.channel_id))
@@ -46,11 +39,11 @@ async def process_message(msg: NormalizedMessage, db: AsyncSession) -> dict:
             channel_id = channel.id
         elif msg.source == "telegram":
             raise ValueError(f"Telegram channel '{msg.channel_id}' is not registered")
-
     if assignment["is_new"]:
         cluster = ClaimCluster(centroid=vector, member_count=0, topology_label_internal="unclassified", topology_label_external="unclassified", first_seen=ts, last_seen=ts, created_at=datetime.now(timezone.utc))
         db.add(cluster); await db.flush()
-        # Every new cluster is watched for a topology change so the Alerts view works
+        # Every new cluster is watched for a topology change so the Alerts
+        # view works without requiring a separate manual setup step.
         db.add(WatchCondition(
             cluster_id=cluster.id,
             condition_type="topology_shift",
@@ -60,23 +53,20 @@ async def process_message(msg: NormalizedMessage, db: AsyncSession) -> dict:
         ))
     else:
         cluster = (await db.execute(select(ClaimCluster).where(ClaimCluster.id == assignment["assigned_cluster_id"]).with_for_update())).scalar_one()
-
     raw = RawMessage(source=msg.source, source_id=msg.source_id, channel_id=channel_id, author_id=msg.author_id, author_account_age_days=msg.author_account_age_days, text=msg.text, language=msg.language, embedding=vector, timestamp=ts, cluster_id=cluster.id, metadata_json=msg.metadata, created_at=datetime.now(timezone.utc))
     db.add(raw); await db.flush()
     cluster.member_count += 1; cluster.first_seen = min(cluster.first_seen, ts); cluster.last_seen = max(cluster.last_seen, ts)
-
-    # Running mean keeps the centroid transactionally aligned with membership.
+       # Running mean keeps the centroid transactionally aligned with membership.
     old_count = cluster.member_count - 1
     if len(cluster.centroid) != len(vector):
         raise ValueError("Embedding dimension does not match cluster centroid")
-
+    
     new_centroid = [((cluster.centroid[i] * old_count) + vector[i]) / cluster.member_count for i in range(len(vector))]
     centroid_arr = np.array(new_centroid, dtype=np.float32)
     norm = np.linalg.norm(centroid_arr)
-    if norm > 0:
-        centroid_arr = centroid_arr / norm
-    cluster.centroid = centroid_arr.tolist()
-
+if norm > 0:
+    centroid_arr = centroid_arr / norm
+cluster.centroid = centroid_arr.tolist()
     parents = list((await db.scalars(select(RawMessage).where(RawMessage.cluster_id == cluster.id, RawMessage.timestamp < ts))).all())
     edge = None
     if parents:
